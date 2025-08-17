@@ -1,0 +1,135 @@
+.header{
+  font-size: 100px;
+  text-align: center;
+  font-family: monospace;
+  position: relative;
+}
+
+.back-btn {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 40px;
+  cursor: pointer;
+  color: #FF9B00;
+  padding: 5px 10px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.back-btn:hover {
+  background-color: rgba(255, 155, 0, 0.1);
+}
+body{
+  background-color: #EBE389;
+  color:#FF9B00
+}
+.help{
+  margin-top: 50px;
+  color: #FF9B00;
+  font-size: 50px;
+  text-align: center;
+  font-family: monospace;
+}
+.keyword{
+  text-align: center;
+  font-size: 30px;
+}
+.keyword input{
+    font-size: 30px;
+    padding: 10px;
+    margin-left: 5px;
+    border: 2px solid #FF9B00;
+    border-radius:30px;
+    color:#FF9B00;
+    background-color: #EBE389;
+}
+.get{
+  background-color:#FF9B00;
+  border-radius: 30px;
+  margin-left: 25%;
+  padding: 10px;
+  margin-top: 20px;
+  font-size: 30px;
+  color: #EBE389;
+  width: 50%; 
+}
+
+.btn{
+  background-color:#FF9B00;
+  border-radius: 30px;
+  margin-left: 25%;
+  padding: 10px;
+  margin-top: 20px;
+  font-size: 30px;
+  color: #EBE389;
+  width: 50%; 
+}
+.store-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+}
+
+.left {
+  flex: 1;
+  min-width: 0;
+}
+
+.right {
+  flex: 0.3;
+  width: 100%;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin-left: 50px;
+}
+
+.right p {
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.right input[type="file"] {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  border: 1px solid #FF9B00;
+  border-radius: 5px;
+  background-color: #EBE389;
+  color: #FF9B00;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  
+}
+
+.text{
+  width: 100%;
+  height: 360px;
+  padding: 15px;
+  border: 2px solid #FF9B00;
+  border-radius: 10px;
+  background-color: #EBE389;
+  color: #FF9B00;
+  font-family: monospace;
+  font-size: 16px;
+  resize: vertical;
+}
+.right button{
+  background-color:#FF9B00;
+  border-radius: 30px;
+  margin-left: 0%;
+  padding: 10px;
+  margin-top: 20px;
+  font-size: 30px;
+  color: #EBE389;
+  width: 110%;   
+}
