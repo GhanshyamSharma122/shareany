@@ -38,7 +38,7 @@ const Index = () => {
 
   // Make sure this URL matches your backend server (default: http://localhost:8000/)
   // If you change the frontend dev port, update backend CORS accordingly
-  const response = await fetch(' https://shareany.onrender.com', {
+  const response = await fetch(' https://shareany.onrender.com/', {
         method: 'POST',
         body: formData,
       });
