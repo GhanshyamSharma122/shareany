@@ -9,8 +9,7 @@ const getData=async (req,res) => {
         if(diff>=24*60*60*1000){
             cleanUP();
             await timeStore.findByIdAndDelete(prevCleanDate[0]._id)
-            await timeStore.create({});
-        }
+            await timeStore.create({});        }
     }else{
         await timeStore.create({})
     }
