@@ -24,41 +24,59 @@ const getData=async (req,res) => {
         })
     }
 }
-const sendData=async (req,res ) => {
-    const {text}=req.body;
-    const files=[];
-    //handling the files
-    if(req.files?.files){
-    for(let i of req.files?.files){
-        
-        const j=i?.path
-        console.log(j)
-        const tempupload=await uploadOnCloudinary(j)
-        console.log(tempupload.url)
-        if(tempupload){
-            files.push(tempupload.url)
+const sendData = async (req, res) => {
+    const { text } = req.body;
+    const files = [];
+    // handling the files
+    if (req.files && Array.isArray(req.files.files)) {
+        for (let i of req.files.files) {
+            const j = i?.path;
+            console.log('Uploading file:', j);
+            const tempupload = await uploadOnCloudinary(j);
+            if (tempupload && tempupload.url) {
+                files.push(tempupload.url);
+            } else {
+                console.error('Cloudinary upload failed for', j);
+            }
+        }
+    } else if (req.files && req.files.files) {
+        const i = req.files.files;
+        const j = i?.path;
+        console.log('Uploading file:', j);
+        const tempupload = await uploadOnCloudinary(j);
+        if (tempupload && tempupload.url) {
+            files.push(tempupload.url);
+        } else {
+            console.error('Cloudinary upload failed for', j);
         }
     }
-}   
-    const createdStore=await Storage.create({
-        text,
-        files,
-    })
-    const keyword=await createdStore.getKeyword();
-    createdStore.keyword=keyword
-    if(!createdStore){
-        throw new Error(JSON.stringify({
-            status:400,
-            message:"error creating the store"
-        }))
+
+    try {
+        const createdStore = await Storage.create({
+            text,
+            files,
+        });
+        const keyword = await createdStore.getKeyword();
+        createdStore.keyword = keyword;
+        if (!createdStore) {
+            return res.status(400).json({
+                status: 400,
+                message: "Error creating the store",
+            });
+        }
+        return res.status(200).json({
+            status: 200,
+            message: "Created successfully",
+            createdStore
+        });
+    } catch (err) {
+        console.error('Error in sendData:', err);
+        return res.status(500).json({
+            status: 500,
+            message: "Internal server error",
+            error: err.message || err
+        });
     }
-    return res
-    .status(200)
-    .json({
-        status:200,
-        message:"created sucessfully",
-        createdStore
-    })
 }
 export {
     getData,
