@@ -26,7 +26,7 @@ export const RetrieveSection = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch(`http://localhost:8000/${keyword.trim()}`);
+      const response = await fetch(`https://shareany.onrender.com/${keyword.trim()}`);
       const result = await response.json();
 
       if (response.ok && result.status === 200) {
