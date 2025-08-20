@@ -1,6 +1,15 @@
-import { Storage } from "./model.js"
+import { Storage ,timeStore} from "./model.js"
 import { uploadOnCloudinary } from "./cloudinary.js"
+import { cleanUP } from "./services/cleanup.service.js"
 const getData=async (req,res) => {
+    const getCurrentDate=Date.now()
+    const prevCleanDate=await timeStore.find({})
+    const diff=getCurrentDate-prevCleanDate[0].createdAt;
+    if(diff>=24*60*60*1000){
+        cleanUP();
+        await timeStore.findByIdAndDelete(prevCleanDate[0]._id)
+        await timeStore.create({});
+    }
     const keyword = req.params.key 
     const data=await Storage.findOne({
         keyword,

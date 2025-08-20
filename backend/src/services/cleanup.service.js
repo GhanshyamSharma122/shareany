@@ -1,10 +1,10 @@
 import { Storage } from "../model.js";
 import fs from "fs"
 import connectDB from "../db.js";
-connectDB();
+
 import { deleteFilesFromCloudinary } from "../cloudinary.js";
 const filePath="./logs.txt"
-async function cleanUP(){
+export async function cleanUP(){
     try {
         const time=new Date(Date.now()-24*60*60*1000);
         // const time=new Date(Date.now()-1000);
@@ -13,7 +13,7 @@ async function cleanUP(){
         })
         console.log(idsToDelete)
         if(!idsToDelete){
-            process.exit(0);  
+            return;
         }
         for(let doc of idsToDelete){
             await Storage.findByIdAndDelete(doc._id)
@@ -29,7 +29,7 @@ async function cleanUP(){
                 await deleteFilesFromCloudinary(publicId)
             }
         }
-        process.exit(0);
+        return;
     } catch (error) {
         fs.appendFile(filePath,new Date().toISOString()+" "+error.toString(),(err)=>{
             if(err){
