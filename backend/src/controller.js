@@ -4,18 +4,22 @@ import { cleanUP } from "./services/cleanup.service.js"
 const getData=async (req,res) => {
     const getCurrentDate=Date.now()
     const prevCleanDate=await timeStore.find({})
-    const diff=getCurrentDate-prevCleanDate[0].createdAt;
-    if(diff>=24*60*60*1000){
-        cleanUP();
-        await timeStore.findByIdAndDelete(prevCleanDate[0]._id)
-        await timeStore.create({});
+    if(prevCleanDate[0]){
+        const diff=getCurrentDate-prevCleanDate[0].createdAt;
+        if(diff>=24*60*60*1000){
+            cleanUP();
+            await timeStore.findByIdAndDelete(prevCleanDate[0]._id)
+            await timeStore.create({});
+        }
+    }else{
+        await timeStore.create({})
     }
     const keyword = req.params.key 
     const data=await Storage.findOne({
         keyword,
     })
-    console.log('Looking for keyword:', keyword)
-    console.log('Found data:', data)
+    // console.log('Looking for keyword:', keyword)
+    // console.log('Found data:', data)
     if(data){
         return res
         .status(200)
@@ -35,6 +39,18 @@ const getData=async (req,res) => {
     }
 }
 const sendData = async (req, res) => {
+    const getCurrentDate=Date.now()
+    const prevCleanDate=await timeStore.find({})
+    if(prevCleanDate[0]){
+        const diff=getCurrentDate-prevCleanDate[0].createdAt;
+        if(diff>=24*60*60*1000){
+            cleanUP();
+            await timeStore.findByIdAndDelete(prevCleanDate[0]._id)
+            await timeStore.create({});
+        }
+    }else{
+        await timeStore.create({})
+    }
     const { text } = req.body;
     const files = [];
     // handling the files

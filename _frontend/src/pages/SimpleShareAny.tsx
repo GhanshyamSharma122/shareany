@@ -93,118 +93,124 @@ export default function SimpleShareAny() {
         </div>
       )}
 
-      {!uploaded ? (
-        <div className="upload-section">
-          <h2>📁 Upload & Share</h2>
-          <form onSubmit={handleUpload} className="form">
-            <div className="input-group">
-              <label>Message (optional)</label>
-              <textarea
-                placeholder="Add a message or text content..."
-                value={text}
-                onChange={e => setText(e.target.value)}
-                className="textarea"
-              />
-            </div>
-            
-            <div className="input-group">
-              <label>Files (max 3)</label>
-              <input
-                type="file"
-                multiple
-                onChange={e => setFiles(Array.from(e.target.files).slice(0, 3))}
-                className="file-input"
-                accept="*/*"
-              />
-              {files.length > 0 && (
-                <div className="file-list">
-                  {files.map((file, i) => (
-                    <div key={i} className="file-item">
-                      📄 {file.name} ({(file.size / 1024).toFixed(1)} KB)
+      <div className="main-content">
+        <div className="left-column">
+          {!uploaded ? (
+            <div className="upload-section">
+              <h2>📁 Upload & Share</h2>
+              <form onSubmit={handleUpload} className="form">
+                <div className="input-group">
+                  <label>Message (optional)</label>
+                  <textarea
+                    placeholder="Add a message or text content..."
+                    value={text}
+                    onChange={e => setText(e.target.value)}
+                    className="textarea"
+                  />
+                </div>
+                
+                <div className="input-group">
+                  <label>Files (max 3)</label>
+                  <input
+                    type="file"
+                    multiple
+                    onChange={e => setFiles(Array.from(e.target.files).slice(0, 3))}
+                    className="file-input"
+                    accept="*/*"
+                  />
+                  {files.length > 0 && (
+                    <div className="file-list">
+                      {files.map((file, i) => (
+                        <div key={i} className="file-item">
+                          📄 {file.name} ({(file.size / 1024).toFixed(1)} KB)
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
-              )}
+                
+                <button type="submit" disabled={loading} className="btn btn-primary">
+                  {loading ? "⏳ Uploading..." : "🚀 Create Share Link"}
+                </button>
+              </form>
             </div>
-            
-            <button type="submit" disabled={loading} className="btn btn-primary">
-              {loading ? "⏳ Uploading..." : "🚀 Create Share Link"}
-            </button>
-          </form>
-        </div>
-      ) : (
-        <div className="success-section">
-          <h2>✅ Upload Successful!</h2>
-          <div className="share-info">
-            <div className="keyword-box">
-              <strong>Share Keyword: </strong>
-              <span className="keyword">{uploaded.createdStore.keyword}</span>
-            </div>
-            <div className="created-date">
-              Created: {new Date(uploaded.createdStore.createdAt).toLocaleString()}
-            </div>
-            {uploaded.createdStore.text && (
-              <div className="shared-text">
-                <strong>Text:</strong> {uploaded.createdStore.text}
-              </div>
-            )}
-            {uploaded.createdStore.files && uploaded.createdStore.files.length > 0 && (
-              <div className="files-section">
-                <strong>Files:</strong>
-                <div className="file-links">
-                  {uploaded.createdStore.files.map((url, i) => (
-                    <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="file-link">
-                      📎 {getFileName(url)}
-                    </a>
-                  ))}
+          ) : (
+            <div className="success-section">
+              <h2>✅ Upload Successful!</h2>
+              <div className="share-info">
+                <div className="keyword-box">
+                  <strong>Share Keyword: </strong>
+                  <span className="keyword">{uploaded.createdStore.keyword}</span>
                 </div>
+                <div className="created-date">
+                  Created: {new Date(uploaded.createdStore.createdAt).toLocaleString()}
+                </div>
+                {uploaded.createdStore.text && (
+                  <div className="shared-text">
+                    <strong>Text:</strong> {uploaded.createdStore.text}
+                  </div>
+                )}
+                {uploaded.createdStore.files && uploaded.createdStore.files.length > 0 && (
+                  <div className="files-section">
+                    <strong>Files:</strong>
+                    <div className="file-links">
+                      {uploaded.createdStore.files.map((url, i) => (
+                        <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="file-link">
+                          📎 {getFileName(url)}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          <button onClick={resetUpload} className="btn btn-secondary">
-            📤 Upload Another
-          </button>
+              <button onClick={resetUpload} className="btn btn-secondary">
+                📤 Upload Another
+              </button>
+            </div>
+          )}
         </div>
-      )}
 
-      <div className="retrieve-section">
-        <h2>🔍 Retrieve Share</h2>
-        <form onSubmit={handleRetrieve} className="form">
-          <div className="input-group">
-            <input
-              placeholder="Enter keyword to retrieve"
-              value={keyword}
-              onChange={e => setKeyword(e.target.value)}
-              className="input"
-            />
-          </div>
-          <button type="submit" disabled={loading} className="btn btn-secondary">
-            {loading ? "⏳ Retrieving..." : "🔍 Retrieve"}
-          </button>
-        </form>
-        
-        {retrieved && (
-          <div className="retrieved-content">
-            <h3>📋 Retrieved Content</h3>
-            {retrieved.text && (
-              <div className="retrieved-text">
-                <strong>Text:</strong> {retrieved.text}
+        <div className="right-column">
+          <div className="retrieve-section">
+            <h2>🔍 Retrieve Share</h2>
+            <form onSubmit={handleRetrieve} className="form">
+              <div className="input-group">
+                <input
+                  placeholder="Enter keyword to retrieve"
+                  value={keyword}
+                  onChange={e => setKeyword(e.target.value)}
+                  className="input"
+                />
+              </div>
+              <button type="submit" disabled={loading} className="btn btn-secondary">
+                {loading ? "⏳ Retrieving..." : "🔍 Retrieve"}
+              </button>
+            </form>
+            
+            {retrieved && (
+              <div className="retrieved-content">
+                <h3>📋 Retrieved Content</h3>
+                {retrieved.text && (
+                  <div className="retrieved-text">
+                    <strong>Text:</strong> {retrieved.text}
+                  </div>
+                )}
+                {retrieved.files && retrieved.files.length > 0 && (
+                  <div className="files-section">
+                    <strong>Files:</strong>
+                    <div className="file-links">
+                      {retrieved.files.map((url, i) => (
+                        <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="file-link">
+                          📎 {getFileName(url)}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
-            {retrieved.files && retrieved.files.length > 0 && (
-              <div className="files-section">
-                <strong>Files:</strong>
-                <div className="file-links">
-                  {retrieved.files.map((url, i) => (
-                    <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="file-link">
-                      📎 {getFileName(url)}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
