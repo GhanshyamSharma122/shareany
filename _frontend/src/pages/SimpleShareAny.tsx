@@ -85,6 +85,9 @@ export default function SimpleShareAny() {
       <div className="header">
         <h1>📤 ShareAny</h1>
         <p>Share files and text temporarily</p>
+        <div className="data-notice">
+          ⏰ All shared data will be automatically deleted after 24 hours
+        </div>
       </div>
 
       {error && (
@@ -98,6 +101,9 @@ export default function SimpleShareAny() {
           {!uploaded ? (
             <div className="upload-section">
               <h2>📁 Upload & Share</h2>
+              <div className="warning-notice">
+                ⚠️ Data will be deleted automatically after 24 hours
+              </div>
               <form onSubmit={handleUpload} className="form">
                 <div className="input-group">
                   <label>Message (optional)</label>
@@ -137,6 +143,9 @@ export default function SimpleShareAny() {
           ) : (
             <div className="success-section">
               <h2>✅ Upload Successful!</h2>
+              <div className="expiry-notice">
+                🕒 This data will be deleted automatically in 24 hours
+              </div>
               <div className="share-info">
                 <div className="keyword-box">
                   <strong>Share Keyword: </strong>
