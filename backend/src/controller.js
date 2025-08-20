@@ -1,11 +1,12 @@
 import { Storage } from "./model.js"
 import { uploadOnCloudinary } from "./cloudinary.js"
 const getData=async (req,res) => {
-    const keyword=req?.key 
+    const keyword = req.params.key 
     const data=await Storage.findOne({
         keyword,
     })
-    console.log(data)
+    console.log('Looking for keyword:', keyword)
+    console.log('Found data:', data)
     if(data){
         return res
         .status(200)
@@ -52,12 +53,13 @@ const sendData = async (req, res) => {
     }
 
     try {
+        const keyword = Math.random().toString(36).substring(2, 15);
         const createdStore = await Storage.create({
             text,
             files,
+            keyword
         });
-        const keyword = await createdStore.getKeyword();
-        createdStore.keyword = keyword;
+        
         if (!createdStore) {
             return res.status(400).json({
                 status: 400,

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 const storageSchema=new mongoose.Schema({
     text:{
         type:String,
-        required:true
+        required:false
     },
     files:{
         type:[String]
