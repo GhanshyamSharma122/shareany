@@ -7,6 +7,7 @@ const filePath="./logs.txt"
 async function cleanUP(){
     try {
         const time=new Date(Date.now()-24*60*60*1000);
+        // const time=new Date(Date.now()-1000);
         const idsToDelete=await Storage.find({
         createdAt:{$lte:time}
         })
@@ -39,4 +40,3 @@ async function cleanUP(){
         })
     }
 }
-cleanUP();

@@ -25,3 +25,6 @@ storageSchema.methods.getKeyword=async function () {
     return randomString
 }
 export const Storage=mongoose.model("Storage",storageSchema);
+const timeStoreSchema=new mongoose.Schema({
+},{timestamps:true})
+export const timeStore=mongoose.model("TimeStore",timeStoreSchema);
