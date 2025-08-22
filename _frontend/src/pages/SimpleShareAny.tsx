@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./SimpleShareAny.css";
 
-const API_URL = "http://localhost:8000/";
+const API_URL = "https://shareany.onrender.com/";
 
 export default function SimpleShareAny() {
   const [files, setFiles] = useState([]);
