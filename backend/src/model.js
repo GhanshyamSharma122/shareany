@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { generate } from "random-words";
 const storageSchema=new mongoose.Schema({
     text:{
         type:String,
@@ -16,10 +17,10 @@ const storageSchema=new mongoose.Schema({
 })
 
 storageSchema.methods.getKeyword=async function () {
-    let randomString = Math.random().toString(36).substring(2, 15);
+    let randomString = generate({ minLength: 5, maxLength: 10 });
     let check=await Storage.findOne({keyword:randomString});
     while(check){
-        randomString = Math.random().toString(36).substring(2, 15);
+        randomString = generate({ minLength: 5, maxLength: 10 });
         check=await this.findOne({keyword:randomString});
     }
     return randomString
