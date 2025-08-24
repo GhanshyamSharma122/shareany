@@ -21,36 +21,36 @@ All colors MUST be HSL.
   :root {
     /* Base colors - Black background with purple accents */
     --background: 0 0% 5%;
-    --foreground: 0 0% 0%;
+    --foreground: 0 0% 98%;
 
     /* Card colors */
     --card: 0 0% 8%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 0 0% 98%;
 
     /* Popover colors */
     --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 0%;
+    --popover-foreground: 0 0% 98%;
 
     /* Primary gradient colors - Purple theme */
     --primary: 270 70% 50%;
-    --primary-foreground: 0 0% 0%;
+    --primary-foreground: 0 0% 98%;
     --primary-glow: 280 80% 60%;
 
     /* Secondary colors */
     --secondary: 270 10% 15%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary-foreground: 0 0% 98%;
 
     /* Muted colors */
     --muted: 270 5% 20%;
-    --muted-foreground: 0 0% 30%;
+    --muted-foreground: 0 0% 70%;
 
     /* Accent colors */
     --accent: 270 30% 25%;
-    --accent-foreground: 0 0% 0%;
+    --accent-foreground: 0 0% 98%;
 
     /* Destructive colors */
     --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 0%;
+    --destructive-foreground: 0 0% 98%;
 
     /* Border and input */
     --border: 270 20% 25%;
@@ -75,49 +75,49 @@ All colors MUST be HSL.
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 10%;
-    --sidebar-foreground: 0 0% 0%;
+    --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 270 70% 50%;
-    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 270 20% 20%;
-    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 270 30% 25%;
     --sidebar-ring: 270 70% 50%;
   }
 
   .dark {
     --background: 0 0% 3%;
-    --foreground: 0 0% 0%;
+    --foreground: 0 0% 98%;
 
     --card: 0 0% 6%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 0 0% 98%;
 
     --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 0%;
+    --popover-foreground: 0 0% 98%;
 
     --primary: 270 80% 60%;
-    --primary-foreground: 0 0% 0%;
+    --primary-foreground: 0 0% 98%;
 
     --secondary: 270 15% 12%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary-foreground: 0 0% 98%;
 
     --muted: 270 10% 15%;
-    --muted-foreground: 0 0% 40%;
+    --muted-foreground: 0 0% 70%;
 
     --accent: 270 25% 18%;
-    --accent-foreground: 0 0% 0%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 0%;
+    --destructive-foreground: 0 0% 98%;
 
     --border: 270 20% 20%;
     --input: 270 15% 18%;
     --ring: 270 80% 60%;
     --sidebar-background: 0 0% 8%;
-    --sidebar-foreground: 0 0% 0%;
+    --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 270 80% 60%;
-    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 270 20% 15%;
-    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 270 25% 20%;
     --sidebar-ring: 270 80% 60%;
   }
@@ -130,7 +130,7 @@ All colors MUST be HSL.
 
   body {
     background: linear-gradient(135deg, hsl(0 0% 5%), hsl(270 30% 15%));
-    color: hsl(0 0% 0%);
+    color: hsl(0 0% 98%);
     @apply text-foreground min-h-screen;
   }
 }

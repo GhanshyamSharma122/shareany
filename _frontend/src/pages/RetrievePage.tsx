@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Download, FileText, Image, File, Calendar, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import "./SimpleShareAny.css";
 
 interface FileData {
   text?: string;
@@ -25,7 +23,7 @@ const RetrievePage = () => {
       setIsLoading(true);
       
       try {
-        const response = await fetch(`http://localhost:8000/${keyword}`);
+        const response = await fetch(`https://shareany.onrender.com/${keyword}`);
         const result = await response.json();
 
         if (response.ok && result.status === 200) {
@@ -52,13 +50,11 @@ const RetrievePage = () => {
 
   const handleDownload = async (url: string, filename: string) => {
     try {
-      // Create a link element to trigger download
       const link = document.createElement('a');
       link.href = url;
       link.download = filename;
       link.target = '_blank';
       
-      // For Cloudinary URLs, we might need to add download parameter
       const downloadUrl = url.includes('cloudinary.com') 
         ? `${url.split('?')[0]}?fl_attachment:${encodeURIComponent(filename)}`
         : url;
@@ -72,15 +68,6 @@ const RetrievePage = () => {
     } catch (error) {
       toast.error("Download failed. Please try again.");
     }
-  };
-
-  const getFileIcon = (url: string) => {
-    if (url.includes('.jpg') || url.includes('.png') || url.includes('.gif')) {
-      return <Image className="w-5 h-5" />;
-    } else if (url.includes('.pdf') || url.includes('.doc')) {
-      return <FileText className="w-5 h-5" />;
-    }
-    return <File className="w-5 h-5" />;
   };
 
   const getFileName = (url: string) => {
@@ -111,151 +98,108 @@ const RetrievePage = () => {
     return `${hours}h ${minutes}m remaining`;
   };
 
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("Link copied to clipboard!");
+  };
+
   if (isLoading) {
     return (
-      <div className="min-h-screen p-4 flex items-center justify-center">
-        <Card className="p-8 gradient-card border-primary/20 shadow-card text-center">
-          <div className="animate-pulse-glow w-16 h-16 rounded-full gradient-primary mx-auto mb-4 flex items-center justify-center">
-            <Download className="w-8 h-8 text-white" />
-          </div>
-          <h2 className="text-xl font-semibold mb-2">Retrieving Files...</h2>
-          <p className="text-muted-foreground">Searching for keyword: <span className="font-mono text-primary">{keyword}</span></p>
-        </Card>
+      <div className="container">
+        <div className="header">
+          <h1>🔍 ShareAny</h1>
+          <p>Retrieving shared files...</p>
+        </div>
+        <div className="upload-section" style={{ textAlign: 'center' }}>
+          <h2>⏳ Loading...</h2>
+          <p>Searching for keyword: <strong>{keyword}</strong></p>
+        </div>
       </div>
     );
   }
 
   if (error || !data) {
     return (
-      <div className="min-h-screen p-4 flex items-center justify-center">
-        <Card className="p-8 gradient-card border-destructive/20 shadow-card text-center max-w-md">
-          <AlertCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Files Not Found</h2>
-          <p className="text-muted-foreground mb-6">
-            The keyword <span className="font-mono text-primary">{keyword}</span> doesn't exist or the files have expired.
-          </p>
-          <Link to="/">
-            <Button className="gradient-primary text-white hover:opacity-90 transition-smooth">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Button>
+      <div className="container">
+        <div className="header">
+          <h1>❌ ShareAny</h1>
+          <p>Files not found</p>
+        </div>
+        <div className="upload-section" style={{ textAlign: 'center' }}>
+          <h2>🚫 Files Not Found</h2>
+          <p>The keyword <strong>{keyword}</strong> doesn't exist or the files have expired.</p>
+          <Link to="/" className="btn btn-primary" style={{ textDecoration: 'none', marginTop: '1rem', display: 'inline-block' }}>
+            ← Back to Home
           </Link>
-        </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-4">
-      <div className="w-full max-w-4xl mx-auto py-8">
-        {/* Header */}
-        <div className="mb-8 animate-fade-in">
-          <Link to="/">
-            <Button variant="ghost" className="mb-4">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Button>
-          </Link>
-          
-          <div className="text-center">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2 gradient-primary bg-clip-text text-transparent">
-              Shared Files
-            </h1>
-            <p className="text-muted-foreground">
-              Keyword: <span className="font-mono text-primary font-semibold">{data.keyword}</span>
-            </p>
-          </div>
+    <div className="container">
+      <div className="header">
+        <h1>📁 ShareAny</h1>
+        <p>Shared files for keyword: <strong>{data.keyword}</strong></p>
+        <div className="data-notice">
+          ⏰ {getTimeRemaining(data.createdAt)}
         </div>
+      </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* File Info */}
-          <div className="lg:col-span-2 space-y-6 animate-fade-in">
+      <div className="main-content">
+        <div className="left-column">
+          <div className="upload-section">
+            <h2>📋 Retrieved Content</h2>
+            <div className="warning-notice">
+              📅 Shared on: {formatDate(data.createdAt)}
+            </div>
+            
             {data.text && (
-              <Card className="p-6 gradient-card border-primary/20 shadow-card">
-                <div className="flex items-center gap-2 mb-4">
-                  <FileText className="w-5 h-5 text-primary" />
-                  <h3 className="text-lg font-semibold">Message</h3>
+              <div className="retrieved-content">
+                <h3>💬 Message</h3>
+                <div className="retrieved-text">
+                  {data.text}
                 </div>
-                <div className="p-4 rounded-lg bg-background/50 border border-primary/20">
-                  <p className="whitespace-pre-wrap">{data.text}</p>
-                </div>
-              </Card>
+              </div>
             )}
 
             {data.files.length > 0 && (
-              <Card className="p-6 gradient-card border-primary/20 shadow-card">
-                <div className="flex items-center gap-2 mb-4">
-                  <Download className="w-5 h-5 text-primary" />
-                  <h3 className="text-lg font-semibold">Files ({data.files.length})</h3>
-                </div>
-                <div className="space-y-3">
+              <div className="files-section">
+                <h3>📎 Files ({data.files.length})</h3>
+                <div className="file-links">
                   {data.files.map((fileUrl, index) => {
                     const filename = getFileName(fileUrl);
                     return (
-                      <div
-                        key={index}
-                        className="flex items-center gap-4 p-4 rounded-lg bg-background/50 border border-primary/20 transition-smooth hover:border-primary/40"
-                      >
-                        <div className="p-2 rounded-lg bg-primary/10">
-                          {getFileIcon(fileUrl)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">{filename}</p>
-                          <p className="text-sm text-muted-foreground">Ready to download</p>
-                        </div>
-                        <Button
+                      <div key={index} className="file-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'white', borderRadius: '8px', border: '1px solid #e1e5e9', marginBottom: '0.5rem' }}>
+                        <span>📄 {filename}</span>
+                        <button
                           onClick={() => handleDownload(fileUrl, filename)}
-                          className="gradient-primary text-white hover:opacity-90 transition-smooth"
+                          className="btn btn-primary"
+                          style={{ marginLeft: '1rem' }}
                         >
-                          <Download className="w-4 h-4 mr-2" />
-                          Download
-                        </Button>
+                          ⬇️ Download
+                        </button>
                       </div>
                     );
                   })}
                 </div>
-              </Card>
+              </div>
             )}
           </div>
+        </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <Card className="p-6 gradient-card border-primary/20 shadow-card">
-              <h3 className="font-semibold mb-4">File Information</h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-primary" />
-                  <div>
-                    <p className="font-medium">Shared on</p>
-                    <p className="text-muted-foreground">{formatDate(data.createdAt)}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 text-orange-500" />
-                  <div>
-                    <p className="font-medium">Expires</p>
-                    <p className="text-orange-400">{getTimeRemaining(data.createdAt)}</p>
-                  </div>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 gradient-card border-primary/20 shadow-card">
-              <h3 className="font-semibold mb-3">Share This Link</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Others can access these files using the same keyword.
-              </p>
-              <Button
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  toast.success("Link copied to clipboard!");
-                }}
-                variant="outline"
-                className="w-full"
-              >
-                Copy Link
-              </Button>
-            </Card>
+        <div className="right-column">
+          <div className="retrieve-section">
+            <h2>🔗 Share This Link</h2>
+            <p style={{ marginBottom: '1rem', color: '#666' }}>
+              Others can access these files using the same link.
+            </p>
+            <button onClick={copyLink} className="btn btn-secondary" style={{ width: '100%', marginBottom: '1rem' }}>
+              📋 Copy Link
+            </button>
+            <Link to="/" className="btn btn-primary" style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
+              🏠 Back to Home
+            </Link>
           </div>
         </div>
       </div>

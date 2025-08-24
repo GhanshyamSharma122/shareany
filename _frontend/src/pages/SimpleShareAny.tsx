@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import "./SimpleShareAny.css";
 
 const API_URL = "https://shareany.onrender.com/";
@@ -11,6 +12,57 @@ export default function SimpleShareAny() {
   const [retrieved, setRetrieved] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [copyText, setCopyText] = useState("Copy");
+  const [keywordCopyText, setKeywordCopyText] = useState("Copy");
+
+  // Copy to clipboard function
+  const copyToClipboard = async (text, setCopyState) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyState("Copied!");
+      toast.success("Copied to clipboard!");
+      setTimeout(() => setCopyState("Copy"), 2000);
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setCopyState("Copied!");
+        toast.success("Copied to clipboard!");
+        setTimeout(() => setCopyState("Copy"), 2000);
+      } catch (fallbackErr) {
+        setCopyState("Failed");
+        toast.error("Failed to copy");
+        setTimeout(() => setCopyState("Copy"), 2000);
+      }
+      document.body.removeChild(textArea);
+    }
+  };
+
+  // Native share function
+  const shareNative = async () => {
+    const shareUrl = `${window.location.origin}/${uploaded.createdStore.keyword}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'ShareAny - Temporary File Sharing',
+          text: `Access my shared files with keyword: ${uploaded.createdStore.keyword}`,
+          url: shareUrl,
+        });
+      } catch (error) {
+        // User cancelled sharing or share failed, fallback to copy
+        copyToClipboard(shareUrl, setCopyText);
+      }
+    } else {
+      // Fallback to copy for browsers that don't support native sharing
+      copyToClipboard(shareUrl, setCopyText);
+    }
+  };
 
   // Upload handler
   const handleUpload = async (e) => {
@@ -117,18 +169,77 @@ export default function SimpleShareAny() {
                 
                 <div className="input-group">
                   <label>Files (max 3)</label>
-                  <input
-                    type="file"
-                    multiple
-                    onChange={e => setFiles(Array.from(e.target.files).slice(0, 3))}
-                    className="file-input"
-                    accept="*/*"
-                  />
+                  
+                  {/* Three separate file inputs */}
+                  <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
+                    <div>
+                      <input
+                        id="file1"
+                        type="file"
+                        onChange={e => {
+                          if (e.target.files && e.target.files[0]) {
+                            const newFiles = [...files];
+                            newFiles[0] = e.target.files[0];
+                            setFiles(newFiles.filter(Boolean));
+                          }
+                        }}
+                        className="file-input"
+                        accept="*/*"
+                      />
+                      <label htmlFor="file1" className="file-label">Choose File 1</label>
+                    </div>
+                    
+                    <div>
+                      <input
+                        id="file2"
+                        type="file"
+                        onChange={e => {
+                          if (e.target.files && e.target.files[0]) {
+                            const newFiles = [...files];
+                            newFiles[1] = e.target.files[0];
+                            setFiles(newFiles.filter(Boolean));
+                          }
+                        }}
+                        className="file-input"
+                        accept="*/*"
+                      />
+                      <label htmlFor="file2" className="file-label">Choose File 2</label>
+                    </div>
+                    
+                    <div>
+                      <input
+                        id="file3"
+                        type="file"
+                        onChange={e => {
+                          if (e.target.files && e.target.files[0]) {
+                            const newFiles = [...files];
+                            newFiles[2] = e.target.files[0];
+                            setFiles(newFiles.filter(Boolean));
+                          }
+                        }}
+                        className="file-input"
+                        accept="*/*"
+                      />
+                      <label htmlFor="file3" className="file-label">Choose File 3</label>
+                    </div>
+                  </div>
+                  
                   {files.length > 0 && (
                     <div className="file-list">
                       {files.map((file, i) => (
                         <div key={i} className="file-item">
                           📄 {file.name} ({(file.size / 1024).toFixed(1)} KB)
+                          <button 
+                            type="button"
+                            onClick={() => {
+                              const newFiles = [...files];
+                              newFiles.splice(i, 1);
+                              setFiles(newFiles);
+                            }}
+                            style={{ marginLeft: '1rem', padding: '0.2rem 0.5rem', background: '#ff4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                          >
+                            Remove
+                          </button>
                         </div>
                       ))}
                     </div>
@@ -150,6 +261,36 @@ export default function SimpleShareAny() {
                 <div className="keyword-box">
                   <strong>Share Keyword: </strong>
                   <span className="keyword">{uploaded.createdStore.keyword}</span>
+                  <button 
+                    onClick={() => copyToClipboard(uploaded.createdStore.keyword, setKeywordCopyText)}
+                    className="btn btn-secondary"
+                    style={{ marginLeft: '1rem', padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                  >
+                    {keywordCopyText}
+                  </button>
+                </div>
+                <div className="share-url-box">
+                  <strong>Share URL: </strong>
+                  <span className="share-url">{`${window.location.origin}/${uploaded.createdStore.keyword}`}</span>
+                  <button 
+                    onClick={() => copyToClipboard(`${window.location.origin}/${uploaded.createdStore.keyword}`, setCopyText)}
+                    className="btn btn-secondary"
+                    style={{ marginLeft: '1rem', padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                  >
+                    {copyText}
+                  </button>
+                </div>
+                <div className="share-actions" style={{ marginTop: '1rem' }}>
+                  <button 
+                    onClick={shareNative}
+                    className="btn btn-primary"
+                    style={{ marginRight: '1rem' }}
+                  >
+                    📤 Share Link
+                  </button>
+                  <button onClick={resetUpload} className="btn btn-secondary">
+                    📤 Upload Another
+                  </button>
                 </div>
                 <div className="created-date">
                   Created: {new Date(uploaded.createdStore.createdAt).toLocaleString()}
@@ -172,9 +313,6 @@ export default function SimpleShareAny() {
                   </div>
                 )}
               </div>
-              <button onClick={resetUpload} className="btn btn-secondary">
-                📤 Upload Another
-              </button>
             </div>
           )}
         </div>
