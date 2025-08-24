@@ -19,7 +19,6 @@ A simple and secure temporary file and text sharing application that automatical
 - **Vite** for build tooling
 - **Tailwind CSS** for styling
 - **Radix UI** components
-- **Bun** package manager
 - **Sonner** for toast notifications
 
 ### Backend
