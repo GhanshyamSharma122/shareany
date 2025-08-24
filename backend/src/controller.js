@@ -77,7 +77,7 @@ const sendData = async (req, res) => {
     }
 
     try {
-        const keyword = Math.random().toString(36).substring(2, 15);
+        const keyword=await Storage.getKeyword();
         const createdStore = await Storage.create({
             text,
             files,
