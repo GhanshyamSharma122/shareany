@@ -1,5 +1,5 @@
 # ShareAny
-
+<a>https://shareany.me</a>
 A simple and secure temporary file and text sharing application that automatically deletes shared content after 24 hours.
 
 ## 🌟 Features
@@ -19,7 +19,6 @@ A simple and secure temporary file and text sharing application that automatical
 - **Vite** for build tooling
 - **Tailwind CSS** for styling
 - **Radix UI** components
-- **Bun** package manager
 - **Sonner** for toast notifications
 
 ### Backend
@@ -83,7 +82,7 @@ PORT=5000
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/GhanshyamSharma122/shareany.git
    cd shareany
    ```
 
