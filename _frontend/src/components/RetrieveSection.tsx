@@ -51,39 +51,155 @@ export const RetrieveSection = () => {
 
   const handleDownload = async (url: string, filename: string) => {
     try {
-      // Create a link element to trigger download
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
-      link.target = '_blank';
+      toast.info(`Starting download of ${filename}...`);
       
-      // For Cloudinary URLs, we might need to add download parameter
-      const downloadUrl = url.includes('cloudinary.com') 
-        ? `${url.split('?')[0]}?fl_attachment:${encodeURIComponent(filename)}`
-        : url;
+      // Try multiple download strategies for better compatibility
       
-      link.href = downloadUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // Strategy 1: Force download using fetch and blob (works for most cases)
+      try {
+        const response = await fetch(url, {
+          mode: 'cors',
+          headers: {
+            'Accept': '*/*',
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const blob = await response.blob();
+        
+        // Create blob URL and download
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = filename;
+        link.style.display = 'none';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Clean up
+        setTimeout(() => window.URL.revokeObjectURL(blobUrl), 100);
+        
+        toast.success(`${filename} downloaded successfully!`);
+        return;
+        
+      } catch (fetchError) {
+        console.warn('Fetch download failed, trying alternative method:', fetchError);
+        
+        // Strategy 2: Use Cloudinary's built-in download parameter
+        let downloadUrl = url;
+        if (url.includes('cloudinary.com')) {
+          // Add Cloudinary download parameter
+          const separator = url.includes('?') ? '&' : '?';
+          downloadUrl = `${url}${separator}fl_attachment:${encodeURIComponent(filename)}`;
+        }
+        
+        // Strategy 3: Create direct download link
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = filename;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.style.display = 'none';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        toast.success(`${filename} download started!`);
+      }
       
-      toast.success(`Downloading ${filename}...`);
     } catch (error) {
-      toast.error("Download failed. Please try again.");
+      console.error('Download error:', error);
+      
+      // Fallback: Open in new tab with download hint
+      try {
+        let fallbackUrl = url;
+        if (url.includes('cloudinary.com')) {
+          const separator = url.includes('?') ? '&' : '?';
+          fallbackUrl = `${url}${separator}fl_attachment:${encodeURIComponent(filename)}`;
+        }
+        
+        window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
+        toast.info(`Opening ${filename} in new tab. Right-click and "Save as" if download doesn't start automatically.`);
+      } catch (fallbackError) {
+        toast.error(`Failed to download ${filename}. Please try again or contact support.`);
+      }
     }
   };
 
   const getFileIcon = (url: string) => {
-    if (url.includes('.jpg') || url.includes('.png') || url.includes('.gif')) {
+    const filename = url.toLowerCase();
+    
+    // Image files
+    if (filename.includes('.jpg') || filename.includes('.jpeg') || 
+        filename.includes('.png') || filename.includes('.gif') || 
+        filename.includes('.bmp') || filename.includes('.webp') || 
+        filename.includes('.svg')) {
       return <Image className="w-4 h-4" />;
-    } else if (url.includes('.pdf') || url.includes('.doc')) {
+    }
+    
+    // Document files
+    if (filename.includes('.pdf') || filename.includes('.doc') || 
+        filename.includes('.docx') || filename.includes('.txt') || 
+        filename.includes('.rtf') || filename.includes('.odt')) {
       return <FileText className="w-4 h-4" />;
     }
+    
+    // Spreadsheet files
+    if (filename.includes('.xlsx') || filename.includes('.xls') || 
+        filename.includes('.csv') || filename.includes('.ods')) {
+      return <FileText className="w-4 h-4" />;
+    }
+    
+    // Presentation files
+    if (filename.includes('.pptx') || filename.includes('.ppt') || 
+        filename.includes('.odp')) {
+      return <FileText className="w-4 h-4" />;
+    }
+    
+    // Archive files
+    if (filename.includes('.zip') || filename.includes('.rar') || 
+        filename.includes('.7z') || filename.includes('.tar') || 
+        filename.includes('.gz')) {
+      return <File className="w-4 h-4" />;
+    }
+    
+    // Default file icon
     return <File className="w-4 h-4" />;
   };
 
   const getFileName = (url: string) => {
-    return url.split('/').pop() || 'Unknown file';
+    try {
+      // For Cloudinary URLs, extract the original filename
+      if (url.includes('cloudinary.com')) {
+        // Cloudinary URLs have format: .../{public_id}.{extension}
+        const parts = url.split('/');
+        const lastPart = parts[parts.length - 1];
+        
+        // Remove version and other Cloudinary parameters
+        const filename = lastPart.split('?')[0];
+        
+        // Decode URI component in case of encoded characters
+        return decodeURIComponent(filename);
+      }
+      
+      // For other URLs, extract filename from the path
+      const parts = url.split('/');
+      const filename = parts[parts.length - 1];
+      
+      // Remove query parameters
+      const cleanFilename = filename.split('?')[0];
+      
+      return decodeURIComponent(cleanFilename) || 'Unknown file';
+    } catch (error) {
+      console.error('Error extracting filename:', error);
+      return 'Unknown file';
+    }
   };
 
   const formatDate = (dateString: string) => {

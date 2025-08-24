@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { Upload, X, FileText, Image, File } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 interface UploadZoneProps {
@@ -27,23 +26,46 @@ export const UploadZone = ({ files, onFilesChange }: UploadZoneProps) => {
     
     const droppedFiles = Array.from(e.dataTransfer.files);
     
-    if (files.length + droppedFiles.length > 3) {
-      toast.error("Maximum 3 files allowed");
+    if (droppedFiles.length === 0) return;
+    
+    const remainingSlots = 3 - files.length;
+    
+    if (remainingSlots <= 0) {
+      toast.error("Maximum 3 files allowed. Please remove some files first.");
       return;
     }
     
-    onFilesChange([...files, ...droppedFiles.slice(0, 3 - files.length)]);
+    const filesToAdd = droppedFiles.slice(0, remainingSlots);
+    
+    if (droppedFiles.length > remainingSlots) {
+      toast.warning(`Only ${remainingSlots} file(s) can be added. Some files were skipped.`);
+    }
+    
+    onFilesChange([...files, ...filesToAdd]);
   }, [files, onFilesChange]);
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
     
-    if (files.length + selectedFiles.length > 3) {
-      toast.error("Maximum 3 files allowed");
+    if (selectedFiles.length === 0) return;
+    
+    const remainingSlots = 3 - files.length;
+    
+    if (remainingSlots <= 0) {
+      toast.error("Maximum 3 files allowed. Please remove some files first.");
       return;
     }
     
-    onFilesChange([...files, ...selectedFiles.slice(0, 3 - files.length)]);
+    const filesToAdd = selectedFiles.slice(0, remainingSlots);
+    
+    if (selectedFiles.length > remainingSlots) {
+      toast.warning(`Only ${remainingSlots} file(s) can be added. Some files were skipped.`);
+    }
+    
+    onFilesChange([...files, ...filesToAdd]);
+    
+    // Reset the input value to allow selecting the same files again
+    e.target.value = '';
   }, [files, onFilesChange]);
 
   const removeFile = (index: number) => {
@@ -51,11 +73,43 @@ export const UploadZone = ({ files, onFilesChange }: UploadZoneProps) => {
   };
 
   const getFileIcon = (file: File) => {
-    if (file.type.startsWith('image/')) {
+    const fileType = file.type.toLowerCase();
+    const fileName = file.name.toLowerCase();
+    
+    // Image files
+    if (fileType.startsWith('image/') || 
+        fileName.endsWith('.jpg') || fileName.endsWith('.jpeg') || 
+        fileName.endsWith('.png') || fileName.endsWith('.gif') || 
+        fileName.endsWith('.bmp') || fileName.endsWith('.webp') || 
+        fileName.endsWith('.svg')) {
       return <Image className="w-4 h-4" />;
-    } else if (file.type.includes('text') || file.type.includes('document')) {
+    }
+    
+    // Document files
+    if (fileType.includes('text') || fileType.includes('document') || 
+        fileType.includes('pdf') || fileType.includes('msword') || 
+        fileType.includes('wordprocessingml') || 
+        fileName.endsWith('.pdf') || fileName.endsWith('.doc') || 
+        fileName.endsWith('.docx') || fileName.endsWith('.txt') || 
+        fileName.endsWith('.rtf') || fileName.endsWith('.odt')) {
       return <FileText className="w-4 h-4" />;
     }
+    
+    // Spreadsheet files
+    if (fileType.includes('spreadsheet') || fileType.includes('excel') || 
+        fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || 
+        fileName.endsWith('.csv') || fileName.endsWith('.ods')) {
+      return <FileText className="w-4 h-4" />;
+    }
+    
+    // Presentation files
+    if (fileType.includes('presentation') || fileType.includes('powerpoint') || 
+        fileName.endsWith('.pptx') || fileName.endsWith('.ppt') || 
+        fileName.endsWith('.odp')) {
+      return <FileText className="w-4 h-4" />;
+    }
+    
+    // Default file icon for all other types
     return <File className="w-4 h-4" />;
   };
 
@@ -97,9 +151,9 @@ export const UploadZone = ({ files, onFilesChange }: UploadZoneProps) => {
           </div>
           
           <label htmlFor="file-upload">
-            <Button variant="outline" className="cursor-pointer">
+            <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 cursor-pointer">
               Choose Files
-            </Button>
+            </button>
           </label>
         </div>
       </div>
@@ -121,14 +175,12 @@ export const UploadZone = ({ files, onFilesChange }: UploadZoneProps) => {
                   {formatFileSize(file.size)}
                 </p>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
                 onClick={() => removeFile(index)}
-                className="text-muted-foreground hover:text-destructive"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground h-9 px-3 text-muted-foreground hover:text-destructive"
               >
                 <X className="w-4 h-4" />
-              </Button>
+              </button>
             </div>
           ))}
         </div>
