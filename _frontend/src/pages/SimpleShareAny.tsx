@@ -135,7 +135,9 @@ export default function SimpleShareAny() {
   return (
     <div className="container">
       <div className="header">
-        <h1>📤 ShareAny</h1>
+        <div className="header-top">
+          <h1>ShareAny</h1>
+        </div>
         <p>Share files and text temporarily</p>
         <div className="data-notice">
           ⏰ All shared data will be automatically deleted after 24 hours
@@ -171,7 +173,7 @@ export default function SimpleShareAny() {
                   <label>Files (max 3)</label>
                   
                   {/* Three separate file inputs */}
-                  <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
+                  <div className="file-input-container">
                     <div>
                       <input
                         id="file1"
@@ -186,7 +188,7 @@ export default function SimpleShareAny() {
                         className="file-input"
                         accept="*/*"
                       />
-                      <label htmlFor="file1" className="file-label">Choose File 1</label>
+                      <label htmlFor="file1" className="file-label">📄 Choose File 1</label>
                     </div>
                     
                     <div>
@@ -203,7 +205,7 @@ export default function SimpleShareAny() {
                         className="file-input"
                         accept="*/*"
                       />
-                      <label htmlFor="file2" className="file-label">Choose File 2</label>
+                      <label htmlFor="file2" className="file-label">📄 Choose File 2</label>
                     </div>
                     
                     <div>
@@ -220,7 +222,7 @@ export default function SimpleShareAny() {
                         className="file-input"
                         accept="*/*"
                       />
-                      <label htmlFor="file3" className="file-label">Choose File 3</label>
+                      <label htmlFor="file3" className="file-label">📄 Choose File 3</label>
                     </div>
                   </div>
                   

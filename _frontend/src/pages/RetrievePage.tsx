@@ -50,23 +50,72 @@ const RetrievePage = () => {
 
   const handleDownload = async (url: string, filename: string) => {
     try {
+      toast.info("Starting download...");
+      
+      // Method 1: Try direct download with fetch for better CORS handling
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          mode: 'cors',
+        });
+        
+        if (response.ok) {
+          const blob = await response.blob();
+          const downloadUrl = window.URL.createObjectURL(blob);
+          
+          const link = document.createElement('a');
+          link.href = downloadUrl;
+          link.download = filename || 'download';
+          link.style.display = 'none';
+          
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          // Clean up the blob URL
+          window.URL.revokeObjectURL(downloadUrl);
+          
+          toast.success(`Downloaded ${filename}`);
+          return;
+        }
+      } catch (fetchError) {
+        console.warn('Fetch download failed, trying alternative method:', fetchError);
+      }
+      
+      // Method 2: Fallback - Direct link method with Cloudinary optimization
       const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
+      link.style.display = 'none';
+      
+      if (url.includes('cloudinary.com')) {
+        // For Cloudinary, use fl_attachment to force download
+        const baseUrl = url.split('?')[0];
+        const downloadUrl = `${baseUrl}?fl_attachment:${encodeURIComponent(filename)}`;
+        link.href = downloadUrl;
+      } else {
+        link.href = url;
+      }
+      
+      link.download = filename || 'download';
       link.target = '_blank';
+      link.rel = 'noopener noreferrer';
       
-      const downloadUrl = url.includes('cloudinary.com') 
-        ? `${url.split('?')[0]}?fl_attachment:${encodeURIComponent(filename)}`
-        : url;
-      
-      link.href = downloadUrl;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       
-      toast.success(`Downloading ${filename}...`);
+      toast.success(`Download started for ${filename}`);
+      
     } catch (error) {
-      toast.error("Download failed. Please try again.");
+      console.error('Download error:', error);
+      
+      // Method 3: Last resort - open in new tab
+      try {
+        window.open(url, '_blank', 'noopener,noreferrer');
+        toast.info(`Opened ${filename} in new tab. Please save manually if needed.`);
+      } catch (openError) {
+        toast.error("Download failed. Please try copying the link manually.");
+        console.error('All download methods failed:', openError);
+      }
     }
   };
 
@@ -139,7 +188,9 @@ const RetrievePage = () => {
   return (
     <div className="container">
       <div className="header">
-        <h1>📁 ShareAny</h1>
+        <div className="header-top">
+          <h1>ShareAny</h1>
+        </div>
         <p>Shared files for keyword: <strong>{data.keyword}</strong></p>
         <div className="data-notice">
           ⏰ {getTimeRemaining(data.createdAt)}
@@ -170,15 +221,34 @@ const RetrievePage = () => {
                   {data.files.map((fileUrl, index) => {
                     const filename = getFileName(fileUrl);
                     return (
-                      <div key={index} className="file-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'white', borderRadius: '8px', border: '1px solid #e1e5e9', marginBottom: '0.5rem' }}>
-                        <span>📄 {filename}</span>
-                        <button
-                          onClick={() => handleDownload(fileUrl, filename)}
-                          className="btn btn-primary"
-                          style={{ marginLeft: '1rem' }}
-                        >
-                          ⬇️ Download
-                        </button>
+                      <div key={index} className="file-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'var(--input-bg)', borderRadius: '8px', border: '1px solid var(--border-color)', marginBottom: '0.5rem' }}>
+                        <span style={{ color: 'var(--card-text)' }}>📄 {filename}</span>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button
+                            onClick={() => handleDownload(fileUrl, filename)}
+                            className="btn btn-primary"
+                            style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                          >
+                            ⬇️ Download
+                          </button>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(fileUrl);
+                              toast.success(`Copied link for ${filename}`);
+                            }}
+                            className="btn btn-secondary"
+                            style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                          >
+                            📋 Copy Link
+                          </button>
+                          <button
+                            onClick={() => window.open(fileUrl, '_blank')}
+                            className="btn btn-secondary"
+                            style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                          >
+                            👁️ View
+                          </button>
+                        </div>
                       </div>
                     );
                   })}
@@ -191,7 +261,7 @@ const RetrievePage = () => {
         <div className="right-column">
           <div className="retrieve-section">
             <h2>🔗 Share This Link</h2>
-            <p style={{ marginBottom: '1rem', color: '#666' }}>
+            <p style={{ marginBottom: '1rem', color: 'var(--card-text)', opacity: 0.7 }}>
               Others can access these files using the same link.
             </p>
             <button onClick={copyLink} className="btn btn-secondary" style={{ width: '100%', marginBottom: '1rem' }}>
