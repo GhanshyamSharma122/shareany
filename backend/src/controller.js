@@ -7,7 +7,7 @@ const getData=async (req,res) => {
     if(prevCleanDate[0]){
         const diff=getCurrentDate-prevCleanDate[0].createdAt;
         if(diff>=24*60*60*1000){
-            cleanUP();
+            cleanUP().catch(console.error);
             await timeStore.findByIdAndDelete(prevCleanDate[0]._id)
             await timeStore.create({});        }
     }else{
@@ -43,7 +43,7 @@ const sendData = async (req, res) => {
     if(prevCleanDate[0]){
         const diff=getCurrentDate-prevCleanDate[0].createdAt;
         if(diff>=24*60*60*1000){
-            cleanUP();
+            cleanUP().catch(console.error);
             await timeStore.findByIdAndDelete(prevCleanDate[0]._id)
             await timeStore.create({});
         }
