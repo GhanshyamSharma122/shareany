@@ -132,6 +132,77 @@ export default function SimpleShareAny() {
     }
   };
 
+  const handleDownload = async (url, filename) => {
+    try {
+      toast.info("Starting download...");
+      
+      // Method 1: Try direct download with fetch for better CORS handling
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          mode: 'cors',
+        });
+        
+        if (response.ok) {
+          const blob = await response.blob();
+          const downloadUrl = window.URL.createObjectURL(blob);
+          
+          const link = document.createElement('a');
+          link.href = downloadUrl;
+          link.download = filename || 'download';
+          link.style.display = 'none';
+          
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          // Clean up the blob URL
+          window.URL.revokeObjectURL(downloadUrl);
+          
+          toast.success(`Downloaded ${filename}`);
+          return;
+        }
+      } catch (fetchError) {
+        console.warn('Fetch download failed, trying alternative method:', fetchError);
+      }
+      
+      // Method 2: Fallback - Direct link method with Cloudinary optimization
+      const link = document.createElement('a');
+      link.style.display = 'none';
+      
+      if (url.includes('cloudinary.com')) {
+        // For Cloudinary, use fl_attachment to force download
+        const baseUrl = url.split('?')[0];
+        const downloadUrl = `${baseUrl}?fl_attachment:${encodeURIComponent(filename)}`;
+        link.href = downloadUrl;
+      } else {
+        link.href = url;
+      }
+      
+      link.download = filename || 'download';
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast.success(`Download started for ${filename}`);
+      
+    } catch (error) {
+      console.error('Download error:', error);
+      
+      // Method 3: Last resort - open in new tab
+      try {
+        window.open(url, '_blank', 'noopener,noreferrer');
+        toast.info(`Opened ${filename} in new tab. Please save manually if needed.`);
+      } catch (openError) {
+        toast.error("Download failed. Please try copying the link manually.");
+        console.error('All download methods failed:', openError);
+      }
+    }
+  };
+
   return (
     <div className="container">
       <div className="header">
@@ -348,11 +419,40 @@ export default function SimpleShareAny() {
                   <div className="files-section">
                     <strong>Files:</strong>
                     <div className="file-links">
-                      {retrieved.files.map((url, i) => (
-                        <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="file-link">
-                          📎 {getFileName(url)}
-                        </a>
-                      ))}
+                      {retrieved.files.map((url, i) => {
+                        const filename = getFileName(url);
+                        return (
+                          <div key={i} className="file-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'var(--input-bg)', borderRadius: '8px', border: '1px solid var(--border-color)', marginBottom: '0.5rem' }}>
+                            <span>📄 {filename}</span>
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                              <button
+                                onClick={() => handleDownload(url, filename)}
+                                className="btn btn-primary"
+                                style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                              >
+                                ⬇️ Download
+                              </button>
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(url);
+                                  toast.success(`Copied link for ${filename}`);
+                                }}
+                                className="btn btn-secondary"
+                                style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                              >
+                                📋 Copy Link
+                              </button>
+                              <button
+                                onClick={() => window.open(url, '_blank')}
+                                className="btn btn-secondary"
+                                style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                              >
+                                👁️ View
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}

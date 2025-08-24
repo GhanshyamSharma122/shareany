@@ -17,10 +17,10 @@ const storageSchema=new mongoose.Schema({
 })
 
 storageSchema.methods.getKeyword=async function () {
-    let randomString = generate({ minLength: 5, maxLength: 10 });
+    let randomString = generate({ minLength: 5, maxLength: 5 });
     let check=await Storage.findOne({keyword:randomString});
     while(check){
-        randomString = generate({ minLength: 5, maxLength: 10 });
+        randomString = generate({ minLength: 5, maxLength: 5 });
         check=await this.findOne({keyword:randomString});
     }
     return randomString
