@@ -76,12 +76,10 @@ const sendData = async (req, res) => {
         }
     }
 
-    try {
-        const keyword=await Storage.getKeyword();
+    try { 
         const createdStore = await Storage.create({
             text,
             files,
-            keyword
         });
         
         if (!createdStore) {
@@ -90,6 +88,10 @@ const sendData = async (req, res) => {
                 message: "Error creating the store",
             });
         }
+        const keyword=await createdStore.getKeyword();
+        createdStore.keyword=keyword;
+        await createdStore.save();
+        
         return res.status(200).json({
             status: 200,
             message: "Created successfully",
