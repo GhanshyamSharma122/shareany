@@ -13,7 +13,7 @@ const getData=async (req,res) => {
     }else{
         await timeStore.create({})
     }
-    const keyword = req.params.key 
+    const keyword = req.params.key.toLowerCase();
     const data=await Storage.findOne({
         keyword,
     })
@@ -88,7 +88,7 @@ const sendData = async (req, res) => {
                 message: "Error creating the store",
             });
         }
-        const keyword=await createdStore.getKeyword();
+        const keyword=await createdStore.getKeyword().toLowerCase();
         createdStore.keyword=keyword;
         await createdStore.save();
         
