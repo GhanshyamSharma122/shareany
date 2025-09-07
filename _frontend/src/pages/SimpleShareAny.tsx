@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import "./SimpleShareAny.css";
 
 const API_URL = "https://shareany.onrender.com/";
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
 
 export default function SimpleShareAny() {
   const [files, setFiles] = useState([]);
@@ -14,6 +15,26 @@ export default function SimpleShareAny() {
   const [error, setError] = useState("");
   const [copyText, setCopyText] = useState("Copy");
   const [keywordCopyText, setKeywordCopyText] = useState("Copy");
+
+  // File size validation function
+  const validateFileSize = (file) => {
+    if (file.size > MAX_FILE_SIZE) {
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      setError(`File "${file.name}" (${fileSizeMB}MB) exceeds the 10MB limit. Please choose a smaller file.`);
+      toast.error(`File too large: ${file.name} (${fileSizeMB}MB). Max size: 10MB`);
+      return false;
+    }
+    return true;
+  };
+
+  // Helper function to format file size
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
 
   // Copy to clipboard function
   const copyToClipboard = async (text, setCopyState) => {
@@ -71,6 +92,14 @@ export default function SimpleShareAny() {
       setError("Please add some text or files to share");
       return;
     }
+
+    // Validate all file sizes before upload
+    for (let file of files) {
+      if (!validateFileSize(file)) {
+        return; // Stop upload if any file is too large
+      }
+    }
+
     setLoading(true);
     setError("");
     try {
@@ -91,6 +120,17 @@ export default function SimpleShareAny() {
       setError("Network error. Please try again.");
     }
     setLoading(false);
+  };
+
+  // File input handler with size validation
+  const handleFileChange = (index, file) => {
+    if (file && validateFileSize(file)) {
+      setError(""); // Clear any previous error
+      const newFiles = [...files];
+      newFiles[index] = file;
+      setFiles(newFiles.filter(Boolean));
+      toast.success(`File "${file.name}" added successfully`);
+    }
   };
 
   // Retrieve handler
@@ -241,7 +281,17 @@ export default function SimpleShareAny() {
                 </div>
                 
                 <div className="input-group">
-                  <label>Files (max 3)</label>
+                  <label>Files (max 3, 10MB each)</label>
+                  <div className="file-size-notice" style={{ 
+                    fontSize: '0.85rem', 
+                    color: '#666', 
+                    marginBottom: '0.5rem',
+                    padding: '0.5rem',
+                    background: '#f0f0f0',
+                    borderRadius: '4px'
+                  }}>
+                    📏 Maximum file size: 10MB per file
+                  </div>
                   
                   {/* Three separate file inputs */}
                   <div className="file-input-container">
@@ -251,9 +301,7 @@ export default function SimpleShareAny() {
                         type="file"
                         onChange={e => {
                           if (e.target.files && e.target.files[0]) {
-                            const newFiles = [...files];
-                            newFiles[0] = e.target.files[0];
-                            setFiles(newFiles.filter(Boolean));
+                            handleFileChange(0, e.target.files[0]);
                           }
                         }}
                         className="file-input"
@@ -268,9 +316,7 @@ export default function SimpleShareAny() {
                         type="file"
                         onChange={e => {
                           if (e.target.files && e.target.files[0]) {
-                            const newFiles = [...files];
-                            newFiles[1] = e.target.files[0];
-                            setFiles(newFiles.filter(Boolean));
+                            handleFileChange(1, e.target.files[0]);
                           }
                         }}
                         className="file-input"
@@ -285,9 +331,7 @@ export default function SimpleShareAny() {
                         type="file"
                         onChange={e => {
                           if (e.target.files && e.target.files[0]) {
-                            const newFiles = [...files];
-                            newFiles[2] = e.target.files[0];
-                            setFiles(newFiles.filter(Boolean));
+                            handleFileChange(2, e.target.files[0]);
                           }
                         }}
                         className="file-input"
@@ -301,7 +345,7 @@ export default function SimpleShareAny() {
                     <div className="file-list">
                       {files.map((file, i) => (
                         <div key={i} className="file-item">
-                          📄 {file.name} ({(file.size / 1024).toFixed(1)} KB)
+                          📄 {file.name} ({formatFileSize(file.size)})
                           <button 
                             type="button"
                             onClick={() => {
@@ -309,7 +353,15 @@ export default function SimpleShareAny() {
                               newFiles.splice(i, 1);
                               setFiles(newFiles);
                             }}
-                            style={{ marginLeft: '1rem', padding: '0.2rem 0.5rem', background: '#ff4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                            style={{ 
+                              marginLeft: '1rem', 
+                              padding: '0.2rem 0.5rem', 
+                              background: '#ff4444', 
+                              color: 'white', 
+                              border: 'none', 
+                              borderRadius: '4px', 
+                              cursor: 'pointer' 
+                            }}
                           >
                             Remove
                           </button>
@@ -422,7 +474,16 @@ export default function SimpleShareAny() {
                       {retrieved.files.map((url, i) => {
                         const filename = getFileName(url);
                         return (
-                          <div key={i} className="file-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'var(--input-bg)', borderRadius: '8px', border: '1px solid var(--border-color)', marginBottom: '0.5rem' }}>
+                          <div key={i} className="file-item" style={{ 
+                            display: 'flex', 
+                            justifyContent: 'space-between', 
+                            alignItems: 'center', 
+                            padding: '1rem', 
+                            background: 'var(--input-bg)', 
+                            borderRadius: '8px', 
+                            border: '1px solid var(--border-color)', 
+                            marginBottom: '0.5rem' 
+                          }}>
                             <span>📄 {filename}</span>
                             <div style={{ display: 'flex', gap: '0.5rem' }}>
                               <button
