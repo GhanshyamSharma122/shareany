@@ -88,7 +88,7 @@ const sendData = async (req, res) => {
                 message: "Error creating the store",
             });
         }
-        const keyword=await createdStore.getKeyword().toLowerCase();
+        const keyword=(await createdStore.getKeyword()).toLowerCase();
         createdStore.keyword=keyword;
         await createdStore.save();
         
