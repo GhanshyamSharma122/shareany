@@ -23,7 +23,7 @@ const RetrievePage = () => {
       setIsLoading(true);
       
       try {
-        const response = await fetch(`https://shareany.onrender.com/${keyword}`);
+        const response = await fetch(`https://shareany-exnote.vercel.app/${keyword}`);
         const result = await response.json();
 
         if (response.ok && result.status === 200) {

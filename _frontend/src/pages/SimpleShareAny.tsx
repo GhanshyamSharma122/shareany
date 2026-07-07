@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import "./SimpleShareAny.css";
 
-const API_URL = "https://shareany.onrender.com/";
+const API_URL = "https://shareany-exnote.vercel.app/";
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
 const MAX_FILES = 3;
 
@@ -331,6 +331,10 @@ export default function SimpleShareAny() {
             <div className="upload-section">
               <h2>Share something</h2>
               <form onSubmit={handleUpload} className="form">
+                <button type="submit" disabled={loading} className="btn btn-primary btn-submit-top">
+                  {loading ? "Uploading..." : "Create share link"}
+                </button>
+
                 <div className="input-group">
                   <label>Message (optional)</label>
                   <textarea
@@ -397,9 +401,6 @@ export default function SimpleShareAny() {
                   )}
                 </div>
 
-                <button type="submit" disabled={loading} className="btn btn-primary">
-                  {loading ? "Uploading..." : "Create share link"}
-                </button>
               </form>
             </div>
           ) : (
