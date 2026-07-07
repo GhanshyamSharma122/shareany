@@ -156,12 +156,12 @@ const RetrievePage = () => {
     return (
       <div className="container">
         <div className="header">
-          <h1>🔍 ShareAny</h1>
+          <h1>ShareAny</h1>
           <p>Retrieving shared files...</p>
         </div>
         <div className="upload-section" style={{ textAlign: 'center' }}>
-          <h2>⏳ Loading...</h2>
-          <p>Searching for keyword: <strong>{keyword}</strong></p>
+          <h2>Loading...</h2>
+          <p style={{ color: 'var(--text-muted)' }}>Searching for keyword: <span className="keyword">{keyword}</span></p>
         </div>
       </div>
     );
@@ -171,14 +171,16 @@ const RetrievePage = () => {
     return (
       <div className="container">
         <div className="header">
-          <h1>❌ ShareAny</h1>
-          <p>Files not found</p>
+          <h1>ShareAny</h1>
+          <p>Share not found</p>
         </div>
         <div className="upload-section" style={{ textAlign: 'center' }}>
-          <h2>🚫 Files Not Found</h2>
-          <p>The keyword <strong>{keyword}</strong> doesn't exist or the files have expired.</p>
-          <Link to="/" className="btn btn-primary" style={{ textDecoration: 'none', marginTop: '1rem', display: 'inline-block' }}>
-            ← Back to Home
+          <h2>Nothing here</h2>
+          <p style={{ color: 'var(--text-muted)' }}>
+            The keyword <span className="keyword">{keyword}</span> doesn't exist or the share has expired.
+          </p>
+          <Link to="/" className="btn btn-primary" style={{ marginTop: '1rem', alignSelf: 'center' }}>
+            Back to home
           </Link>
         </div>
       </div>
@@ -191,23 +193,23 @@ const RetrievePage = () => {
         <div className="header-top">
           <h1>ShareAny</h1>
         </div>
-        <p>Shared files for keyword: <strong>{data.keyword}</strong></p>
+        <p>Shared with keyword: <strong>{data.keyword}</strong></p>
         <div className="data-notice">
-          ⏰ {getTimeRemaining(data.createdAt)}
+          {getTimeRemaining(data.createdAt)}
         </div>
       </div>
 
       <div className="main-content">
         <div className="left-column">
           <div className="upload-section">
-            <h2>📋 Retrieved Content</h2>
+            <h2>Retrieved content</h2>
             <div className="warning-notice">
-              📅 Shared on: {formatDate(data.createdAt)}
+              Shared on {formatDate(data.createdAt)}
             </div>
-            
+
             {data.text && (
               <div className="retrieved-content">
-                <h3>💬 Message</h3>
+                <h3>Message</h3>
                 <div className="retrieved-text">
                   {data.text}
                 </div>
@@ -215,38 +217,35 @@ const RetrievePage = () => {
             )}
 
             {data.files.length > 0 && (
-              <div className="files-section">
-                <h3>📎 Files ({data.files.length})</h3>
+              <div className="files-section" style={{ marginTop: data.text ? '1rem' : 0 }}>
+                <strong>Files ({data.files.length})</strong>
                 <div className="file-links">
                   {data.files.map((fileUrl, index) => {
                     const filename = getFileName(fileUrl);
                     return (
-                      <div key={index} className="file-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'var(--input-bg)', borderRadius: '8px', border: '1px solid var(--border-color)', marginBottom: '0.5rem' }}>
-                        <span style={{ color: 'var(--card-text)' }}>📄 {filename}</span>
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <div key={index} className="file-row">
+                        <span className="file-row-name">{filename}</span>
+                        <div className="file-row-actions">
                           <button
                             onClick={() => handleDownload(fileUrl, filename)}
-                            className="btn btn-primary"
-                            style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                            className="btn btn-primary btn-sm"
                           >
-                            ⬇️ Download
+                            Download
                           </button>
                           <button
                             onClick={() => {
                               navigator.clipboard.writeText(fileUrl);
                               toast.success(`Copied link for ${filename}`);
                             }}
-                            className="btn btn-secondary"
-                            style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                            className="btn btn-secondary btn-sm"
                           >
-                            📋 Copy Link
+                            Copy link
                           </button>
                           <button
                             onClick={() => window.open(fileUrl, '_blank')}
-                            className="btn btn-secondary"
-                            style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                            className="btn btn-secondary btn-sm"
                           >
-                            👁️ View
+                            View
                           </button>
                         </div>
                       </div>
@@ -260,15 +259,15 @@ const RetrievePage = () => {
 
         <div className="right-column">
           <div className="retrieve-section">
-            <h2>🔗 Share This Link</h2>
-            <p style={{ marginBottom: '1rem', color: 'var(--card-text)', opacity: 0.7 }}>
-              Others can access these files using the same link.
+            <h2>Share this link</h2>
+            <p style={{ margin: '0 0 1rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+              Anyone with this link or keyword can access these files.
             </p>
-            <button onClick={copyLink} className="btn btn-secondary" style={{ width: '100%', marginBottom: '1rem' }}>
-              📋 Copy Link
+            <button onClick={copyLink} className="btn btn-secondary" style={{ width: '100%', marginBottom: '0.75rem' }}>
+              Copy link
             </button>
-            <Link to="/" className="btn btn-primary" style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
-              🏠 Back to Home
+            <Link to="/" className="btn btn-primary" style={{ width: '100%', boxSizing: 'border-box' }}>
+              Back to home
             </Link>
           </div>
         </div>
