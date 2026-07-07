@@ -313,10 +313,6 @@ export default function SimpleShareAny() {
         <div className="header-top">
           <h1>ShareAny</h1>
         </div>
-        <p>Share files and text with a single keyword — no account needed</p>
-        <div className="data-notice">
-          Everything auto-deletes after 24 hours
-        </div>
       </div>
 
       {error && (
@@ -331,10 +327,6 @@ export default function SimpleShareAny() {
             <div className="upload-section">
               <h2>Share something</h2>
               <form onSubmit={handleUpload} className="form">
-                <button type="submit" disabled={loading} className="btn btn-primary btn-submit-top">
-                  {loading ? "Uploading..." : "Create share link"}
-                </button>
-
                 <div className="input-group">
                   <label>Message (optional)</label>
                   <textarea
@@ -401,6 +393,9 @@ export default function SimpleShareAny() {
                   )}
                 </div>
 
+                <button type="submit" disabled={loading} className="btn btn-primary">
+                  {loading ? "Uploading..." : "Create share link"}
+                </button>
               </form>
             </div>
           ) : (
@@ -530,6 +525,13 @@ export default function SimpleShareAny() {
               </div>
             )}
           </div>
+        </div>
+      </div>
+
+      <div className="page-footer">
+        <p>Share files and text with a single keyword — no account needed</p>
+        <div className="data-notice">
+          Everything auto-deletes after 24 hours
         </div>
       </div>
     </div>
