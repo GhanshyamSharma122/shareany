@@ -21,7 +21,7 @@ storageSchema.methods.getKeyword=async function () {
     let check=await Storage.findOne({keyword:randomString});
     while(check){
         randomString = generate({ minLength: 5, maxLength: 10 });
-        check=await this.findOne({keyword:randomString});
+        check=await Storage.findOne({keyword:randomString});
     }
     return randomString
 }

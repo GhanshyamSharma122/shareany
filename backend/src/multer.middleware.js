@@ -1,10 +1,7 @@
 import multer from "multer"
-const storage=multer.diskStorage({
-    destination:function(req,file,cb){
-        cb(null,'./public/temp')
-    },
-    filename:function(req,file,cb){
-        cb(null,file.originalname)
-    }
+// Vercel's filesystem is read-only, so files are kept in memory
+// and streamed to Cloudinary from the buffer.
+export const upload=multer({
+    storage:multer.memoryStorage(),
+    limits:{fileSize:10*1024*1024}
 })
-export const upload=multer({storage,})

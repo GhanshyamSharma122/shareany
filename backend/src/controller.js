@@ -1,6 +1,12 @@
 import { Storage ,timeStore} from "./model.js"
-import { uploadOnCloudinary } from "./cloudinary.js"
+import { uploadOnCloudinary, generateUploadSignature } from "./cloudinary.js"
 import { cleanUP } from "./services/cleanup.service.js"
+const getSignature=async (req,res) => {
+    return res.status(200).json({
+        status:200,
+        ...generateUploadSignature(),
+    })
+}
 const getData=async (req,res) => {
     const getCurrentDate=Date.now()
     const prevCleanDate=await timeStore.find({})
@@ -55,28 +61,38 @@ const sendData = async (req, res) => {
     // handling the files
     if (req.files && Array.isArray(req.files.files)) {
         for (let i of req.files.files) {
-            const j = i?.path;
-            console.log('Uploading file:', j);
-            const tempupload = await uploadOnCloudinary(j);
+            console.log('Uploading file:', i?.originalname);
+            const tempupload = await uploadOnCloudinary(i?.buffer);
             if (tempupload && tempupload.url) {
                 files.push(tempupload.url);
             } else {
-                console.error('Cloudinary upload failed for', j);
+                console.error('Cloudinary upload failed for', i?.originalname);
             }
         }
     } else if (req.files && req.files.files) {
         const i = req.files.files;
-        const j = i?.path;
-        console.log('Uploading file:', j);
-        const tempupload = await uploadOnCloudinary(j);
+        console.log('Uploading file:', i?.originalname);
+        const tempupload = await uploadOnCloudinary(i?.buffer);
         if (tempupload && tempupload.url) {
             files.push(tempupload.url);
         } else {
-            console.error('Cloudinary upload failed for', j);
+            console.error('Cloudinary upload failed for', i?.originalname);
+        }
+    }
+    // URLs from direct browser -> Cloudinary uploads (JSON body);
+    // only accept files that live in our own Cloudinary account
+    if (Array.isArray(req.body?.files)) {
+        const ownCloudPrefix = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`;
+        for (const url of req.body.files) {
+            if (typeof url === "string" && url.startsWith(ownCloudPrefix)) {
+                files.push(url);
+            } else {
+                console.error('Rejected non-owned file url:', url);
+            }
         }
     }
 
-    try { 
+    try {
         const createdStore = await Storage.create({
             text,
             files,
@@ -108,5 +124,6 @@ const sendData = async (req, res) => {
 }
 export {
     getData,
-    sendData
+    sendData,
+    getSignature
 }

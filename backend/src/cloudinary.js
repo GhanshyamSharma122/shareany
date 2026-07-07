@@ -1,5 +1,4 @@
 import {v2 as cloudinary} from 'cloudinary';
-import fs from 'fs';
 import dotenv from "dotenv"
 dotenv.config({
     path:"./.env"
@@ -9,28 +8,44 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
-const uploadOnCloudinary=async(localFilePath)=>{
+const uploadOnCloudinary=async(fileBuffer)=>{
+    if(!fileBuffer) return null
     try {
-        if(!localFilePath) return null
-        console.log(localFilePath)
-        const response=await cloudinary.uploader.upload(localFilePath,{
-            resource_type:"auto"
+        const response=await new Promise((resolve,reject)=>{
+            const stream=cloudinary.uploader.upload_stream(
+                {resource_type:"auto"},
+                (error,result)=>{
+                    if(error) reject(error)
+                    else resolve(result)
+                }
+            )
+            stream.end(fileBuffer)
         })
-        
-        fs.unlinkSync(localFilePath)
         return response
-        
     } catch (error) {
         console.log(error)
-        fs.unlinkSync(localFilePath)
         return null
     }
-
+}
+// signs upload params for direct browser -> Cloudinary uploads;
+// the API secret never leaves the server and the signature expires after 1 hour
+const generateUploadSignature=()=>{
+    const timestamp=Math.round(Date.now()/1000);
+    const signature=cloudinary.utils.api_sign_request(
+        {timestamp},
+        process.env.CLOUDINARY_API_SECRET
+    );
+    return {
+        timestamp,
+        signature,
+        apiKey:process.env.CLOUDINARY_API_KEY,
+        cloudName:process.env.CLOUDINARY_CLOUD_NAME,
+    };
 }
 const deleteFilesFromCloudinary=async (publicId) => {
     try {
         if(publicId){
-           await cloudinary.uploader.destroy(publicId) 
+           await cloudinary.uploader.destroy(publicId)
         }
 
     } catch (error) {
@@ -39,4 +54,5 @@ const deleteFilesFromCloudinary=async (publicId) => {
 }
 export {uploadOnCloudinary
     ,deleteFilesFromCloudinary
+    ,generateUploadSignature
 }
