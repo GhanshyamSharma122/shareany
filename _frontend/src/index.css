@@ -129,7 +129,7 @@ All colors MUST be HSL.
   }
 
   body {
-    background: #0b0b10;
+    background: #08080d;
     color: hsl(0 0% 98%);
     color-scheme: dark;
     @apply text-foreground min-h-screen;

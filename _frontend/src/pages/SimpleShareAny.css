@@ -10,22 +10,22 @@ html, body {
 }
 
 :root {
-  --bg: #0b0b10;
-  --surface: rgba(255, 255, 255, 0.035);
-  --surface-raised: rgba(255, 255, 255, 0.07);
-  --border: rgba(255, 255, 255, 0.09);
-  --border-strong: rgba(255, 255, 255, 0.18);
-  --text: #ededf2;
-  --text-muted: #a3a3b0;
-  --text-faint: #71717e;
+  --bg: #08080d;
+  --surface: #16161f;
+  --surface-raised: #22222e;
+  --border: rgba(255, 255, 255, 0.16);
+  --border-strong: rgba(255, 255, 255, 0.3);
+  --text: #f4f4f8;
+  --text-muted: #b9b9c8;
+  --text-faint: #8f8fa0;
   --accent: #8b5cf6;
   --accent-strong: #7c3aed;
-  --accent-soft: rgba(139, 92, 246, 0.14);
-  --accent-text: #c4b5fd;
-  --success-soft: rgba(52, 211, 153, 0.1);
-  --success-text: #6ee7b7;
-  --danger-soft: rgba(248, 113, 113, 0.1);
-  --danger-text: #fca5a5;
+  --accent-soft: rgba(139, 92, 246, 0.2);
+  --accent-text: #cbb8ff;
+  --success-soft: rgba(52, 211, 153, 0.14);
+  --success-text: #7cf0c2;
+  --danger-soft: rgba(248, 113, 113, 0.14);
+  --danger-text: #ffb3b3;
   --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 8px;
@@ -37,7 +37,7 @@ html, body {
   --card-bg: var(--surface);
   --card-text: var(--text);
   --border-color: var(--border);
-  --input-bg: rgba(255, 255, 255, 0.04);
+  --input-bg: #0c0c13;
   --text-primary: var(--text);
   --text-secondary: var(--text-muted);
 }
@@ -45,8 +45,8 @@ html, body {
 #root {
   min-height: 100vh;
   background:
-    radial-gradient(60rem 32rem at 50% -12rem, rgba(124, 58, 237, 0.18), transparent 60%),
-    radial-gradient(40rem 24rem at 90% 110%, rgba(59, 130, 246, 0.07), transparent 60%),
+    radial-gradient(60rem 32rem at 50% -12rem, rgba(124, 58, 237, 0.28), transparent 60%),
+    radial-gradient(40rem 24rem at 90% 110%, rgba(59, 130, 246, 0.12), transparent 60%),
     var(--bg);
 }
 
@@ -125,14 +125,16 @@ html, body {
 /* ---------- cards ---------- */
 
 .upload-section, .retrieve-section, .success-section {
-  background: var(--surface);
+  background: linear-gradient(180deg, #1a1a25 0%, var(--surface) 100%);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(8px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 32px rgba(0, 0, 0, 0.55);
 }
 
 .upload-section h2, .retrieve-section h2, .success-section h2 {
