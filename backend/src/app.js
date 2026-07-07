@@ -59,3 +59,6 @@ app.use((err,req,res,next)=>{
     })
 })
 export {app}
+// Vercel statically traces api/index.js's re-export back to this module
+// and requires the default export here to be a function or server
+export default app
