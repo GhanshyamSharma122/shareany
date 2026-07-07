@@ -1,6 +1,7 @@
 /* ============================================================
-   ShareAny design system — dark, minimal, one violet accent.
-   Type: Inter (UI) · Space Grotesk (display) · JetBrains Mono (codes)
+   ShareAny design system — warm paper & ink, editorial style.
+   Type: Instrument Sans (UI) · Bricolage Grotesque (display)
+         · Space Mono (keywords & links)
    ============================================================ */
 
 html, body {
@@ -10,34 +11,37 @@ html, body {
 }
 
 :root {
-  --bg: #08080d;
-  --surface: #16161f;
-  --surface-raised: #22222e;
-  --border: rgba(255, 255, 255, 0.16);
-  --border-strong: rgba(255, 255, 255, 0.3);
-  --text: #f4f4f8;
-  --text-muted: #b9b9c8;
-  --text-faint: #8f8fa0;
-  --accent: #8b5cf6;
-  --accent-strong: #7c3aed;
-  --accent-soft: rgba(139, 92, 246, 0.2);
-  --accent-text: #cbb8ff;
-  --success-soft: rgba(52, 211, 153, 0.14);
-  --success-text: #7cf0c2;
-  --danger-soft: rgba(248, 113, 113, 0.14);
-  --danger-text: #ffb3b3;
-  --radius-lg: 16px;
-  --radius-md: 12px;
-  --radius-sm: 8px;
-  --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-display: "Space Grotesk", var(--font-ui);
-  --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --bg: #f4f1ea;
+  --surface: #fffdf7;
+  --surface-raised: #f8f4ec;
+  --ink: #1c1917;
+  --border: #1c1917;
+  --border-soft: rgba(28, 25, 23, 0.15);
+  --text: #1c1917;
+  --text-muted: #5f5850;
+  --text-faint: #948c82;
+  --accent: #e8501e;
+  --accent-strong: #c93e10;
+  --accent-soft: rgba(232, 80, 30, 0.1);
+  --accent-text: #c93e10;
+  --success-soft: #e4f2e0;
+  --success-text: #2f6b32;
+  --danger-soft: #fbe7e2;
+  --danger-text: #b03020;
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 7px;
+  --shadow-hard: 5px 5px 0 var(--ink);
+  --shadow-hard-sm: 3px 3px 0 var(--ink);
+  --font-ui: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Bricolage Grotesque", var(--font-ui);
+  --font-mono: "Space Mono", "SFMono-Regular", Menlo, Consolas, monospace;
 
   /* aliases kept for older markup */
   --card-bg: var(--surface);
   --card-text: var(--text);
-  --border-color: var(--border);
-  --input-bg: #0c0c13;
+  --border-color: var(--border-soft);
+  --input-bg: #ffffff;
   --text-primary: var(--text);
   --text-secondary: var(--text-muted);
 }
@@ -45,9 +49,9 @@ html, body {
 #root {
   min-height: 100vh;
   background:
-    radial-gradient(60rem 32rem at 50% -12rem, rgba(124, 58, 237, 0.28), transparent 60%),
-    radial-gradient(40rem 24rem at 90% 110%, rgba(59, 130, 246, 0.12), transparent 60%),
-    var(--bg);
+    radial-gradient(rgba(28, 25, 23, 0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-color: var(--bg);
 }
 
 .container {
@@ -64,7 +68,7 @@ html, body {
 
 .header {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2.75rem;
 }
 
 .header-top {
@@ -76,14 +80,16 @@ html, body {
 
 .header h1 {
   font-family: var(--font-display);
-  font-size: 2.6rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.035em;
   margin: 0;
-  background: linear-gradient(120deg, #ffffff 20%, #b79cff 80%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--ink);
+}
+
+.header h1::after {
+  content: ".";
+  color: var(--accent);
 }
 
 .header p {
@@ -98,20 +104,21 @@ html, body {
   align-items: center;
   gap: 0.45rem;
   margin-top: 1.1rem;
-  padding: 0.4rem 0.9rem;
+  padding: 0.4rem 1rem;
   border-radius: 999px;
-  font-size: 0.82rem;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
   color: var(--accent-text);
   background: var(--accent-soft);
-  border: 1px solid rgba(139, 92, 246, 0.25);
+  border: 1.5px solid var(--accent);
 }
 
 /* ---------- layout ---------- */
 
 .main-content {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.75rem;
   align-items: stretch;
 }
 
@@ -125,25 +132,23 @@ html, body {
 /* ---------- cards ---------- */
 
 .upload-section, .retrieve-section, .success-section {
-  background: linear-gradient(180deg, #1a1a25 0%, var(--surface) 100%);
-  border: 1px solid var(--border);
+  background: var(--surface);
+  border: 1.5px solid var(--ink);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 12px 32px rgba(0, 0, 0, 0.55);
+  box-shadow: var(--shadow-hard);
 }
 
 .upload-section h2, .retrieve-section h2, .success-section h2 {
   margin: 0 0 1.4rem;
   font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--text);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
 }
 
 .warning-notice, .expiry-notice {
@@ -151,20 +156,20 @@ html, body {
   border-radius: var(--radius-sm);
   margin-bottom: 1.4rem;
   font-size: 0.82rem;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
 }
 
 .warning-notice {
   background: var(--surface-raised);
   color: var(--text-muted);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border-soft);
 }
 
 .expiry-notice {
   background: var(--success-soft);
   color: var(--success-text);
-  border: 1px solid rgba(52, 211, 153, 0.25);
+  border: 1.5px solid rgba(47, 107, 50, 0.35);
 }
 
 /* ---------- forms ---------- */
@@ -183,22 +188,23 @@ html, body {
 }
 
 .input-group label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.07em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  font-family: var(--font-mono);
   color: var(--text-faint);
 }
 
 .textarea, .input {
   padding: 0.85rem 1rem;
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--ink);
   border-radius: var(--radius-md);
   font-size: 0.95rem;
   font-family: inherit;
   color: var(--text);
   background: var(--input-bg);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .textarea::placeholder, .input::placeholder {
@@ -214,7 +220,7 @@ html, body {
 .textarea:focus, .input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 3px 3px 0 var(--accent);
 }
 
 /* ---------- dropzone ---------- */
@@ -224,13 +230,13 @@ html, body {
 }
 
 .dropzone {
-  border: 1.5px dashed var(--border-strong);
+  border: 1.5px dashed var(--ink);
   border-radius: var(--radius-md);
   background: var(--input-bg);
   padding: 2rem 1.25rem;
   text-align: center;
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 
 .dropzone:hover, .dropzone:focus-visible {
@@ -243,18 +249,24 @@ html, body {
   border-color: var(--accent);
   border-style: solid;
   background: var(--accent-soft);
+  box-shadow: var(--shadow-hard-sm);
 }
 
 .dropzone-icon {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   margin: 0 auto 0.75rem;
   border-radius: 999px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent-soft);
-  color: var(--accent-text);
+  background: var(--ink);
+  color: var(--surface);
+}
+
+.dropzone:hover .dropzone-icon, .dropzone.drag-over .dropzone-icon {
+  background: var(--accent);
+  color: #ffffff;
 }
 
 .dropzone-title {
@@ -285,14 +297,14 @@ html, body {
   gap: 0.75rem;
   padding: 0.65rem 0.9rem;
   background: var(--surface-raised);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border-soft);
   border-radius: var(--radius-sm);
   font-size: 0.87rem;
 }
 
 .file-row-name {
   color: var(--text);
-  font-weight: 500;
+  font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -302,6 +314,7 @@ html, body {
 .file-row-size {
   color: var(--text-faint);
   font-size: 0.78rem;
+  font-family: var(--font-mono);
   white-space: nowrap;
 }
 
@@ -332,10 +345,10 @@ html, body {
 
 .btn {
   padding: 0.8rem 1.4rem;
-  border: 1px solid transparent;
+  border: 1.5px solid var(--ink);
   border-radius: var(--radius-md);
   font-size: 0.92rem;
-  font-weight: 600;
+  font-weight: 700;
   font-family: inherit;
   cursor: pointer;
   text-decoration: none;
@@ -344,7 +357,8 @@ html, body {
   justify-content: center;
   gap: 0.5rem;
   min-height: 44px;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  box-shadow: var(--shadow-hard-sm);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
 }
 
 .btn:disabled {
@@ -352,29 +366,32 @@ html, body {
   cursor: not-allowed;
 }
 
+.btn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
 .btn:active:not(:disabled) {
-  transform: scale(0.98);
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ink);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  background: var(--accent);
   color: #ffffff;
-  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.35);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #9d70ff 0%, var(--accent) 100%);
+  background: var(--accent-strong);
 }
 
 .btn-secondary {
-  background: var(--surface-raised);
-  color: var(--text);
-  border-color: var(--border);
+  background: var(--surface);
+  color: var(--ink);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  border-color: var(--border-strong);
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--surface-raised);
 }
 
 .btn-sm {
@@ -382,6 +399,15 @@ html, body {
   font-size: 0.8rem;
   min-height: 34px;
   border-radius: var(--radius-sm);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.btn-sm:hover:not(:disabled) {
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.btn-sm:active:not(:disabled) {
+  box-shadow: 1px 1px 0 var(--ink);
 }
 
 /* ---------- feedback ---------- */
@@ -389,12 +415,12 @@ html, body {
 .error {
   background: var(--danger-soft);
   color: var(--danger-text);
-  border: 1px solid rgba(248, 113, 113, 0.25);
+  border: 1.5px solid rgba(176, 48, 32, 0.4);
   padding: 0.85rem 1rem;
   border-radius: var(--radius-md);
   margin-bottom: 1.25rem;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* ---------- success / share result ---------- */
@@ -407,8 +433,8 @@ html, body {
 }
 
 .keyword-box, .share-url-box {
-  background: var(--input-bg);
-  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  border: 1.5px solid var(--border-soft);
   border-radius: var(--radius-md);
   padding: 1rem;
   display: flex;
@@ -418,10 +444,11 @@ html, body {
 }
 
 .keyword-box strong, .share-url-box strong {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.07em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  font-family: var(--font-mono);
   color: var(--text-faint);
   flex-basis: 100%;
 }
@@ -429,18 +456,18 @@ html, body {
 .keyword {
   font-family: var(--font-mono);
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.04em;
-  color: var(--accent-text);
-  background: var(--accent-soft);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: #ffffff;
+  background: var(--ink);
+  border: 1.5px solid var(--ink);
   padding: 0.4rem 0.9rem;
   border-radius: var(--radius-sm);
 }
 
 .share-url {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   word-break: break-all;
   flex: 1;
@@ -455,8 +482,8 @@ html, body {
 
 .created-date, .shared-text, .retrieved-text {
   padding: 0.9rem 1rem;
-  background: var(--input-bg);
-  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  border: 1.5px solid var(--border-soft);
   border-radius: var(--radius-md);
   color: var(--text-muted);
   font-size: 0.88rem;
@@ -472,16 +499,17 @@ html, body {
 
 .files-section {
   padding: 1rem;
-  background: var(--input-bg);
-  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  border: 1.5px solid var(--border-soft);
   border-radius: var(--radius-md);
 }
 
 .files-section strong, .files-section h3 {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.07em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  font-family: var(--font-mono);
   color: var(--text-faint);
   margin: 0;
 }
@@ -498,11 +526,13 @@ html, body {
   text-decoration: none;
   padding: 0.6rem 0.85rem;
   border-radius: var(--radius-sm);
-  background: var(--surface-raised);
-  border: 1px solid var(--border);
+  background: var(--input-bg);
+  border: 1.5px solid var(--border-soft);
   transition: border-color 0.15s ease;
   display: block;
-  font-size: 0.87rem;
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -522,16 +552,18 @@ html, body {
 .retrieved-content h3 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--text);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
 }
 
 /* ---------- footer ---------- */
 
 .page-footer {
   text-align: center;
-  margin-top: 2.5rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1.5px solid var(--border-soft);
 }
 
 .page-footer p {
@@ -552,12 +584,12 @@ html, body {
   }
 
   .header h1 {
-    font-size: 2rem;
+    font-size: 2.25rem;
   }
 
   .main-content {
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1.5rem;
   }
 
   .left-column, .right-column {
