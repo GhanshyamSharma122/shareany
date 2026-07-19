@@ -1,21 +1,21 @@
 /* ============================================================
    ShareAny — digital coat check
-   Tokens: cobalt drop panel, cool paper claim panel,
-   amber claim ticket, ink text, coral errors.
+   Tokens: deep pine drop panel, bone paper claim panel,
+   salmon "admit one" claim ticket, green-black ink, red errors.
    Type: Archivo (display + body), IBM Plex Mono (tickets/keywords).
    ============================================================ */
 
 :root {
-  --ink: #101623;
-  --cobalt: #2334e8;
-  --cobalt-deep: #1a27b4;
-  --cobalt-line: rgba(255, 255, 255, 0.22);
-  --paper: #f2f4f8;
-  --white: #ffffff;
-  --ticket: #ffc838;
-  --ticket-deep: #eaaa00;
-  --coral: #ff5a45;
-  --muted: #5a6376;
+  --ink: #16211c;
+  --pine: #17423a;
+  --pine-deep: #0e2f2a;
+  --pine-line: rgba(244, 241, 232, 0.25);
+  --paper: #f4f1e8;
+  --white: #fffdf8;
+  --ticket: #f97e5d;
+  --ticket-deep: #e5643f;
+  --coral: #c8442e;
+  --muted: #5f6b60;
   --font-body: "Archivo", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
@@ -110,7 +110,7 @@ button {
 }
 
 .panel-drop {
-  background: var(--cobalt);
+  background: var(--pine);
   color: var(--white);
 }
 
@@ -208,7 +208,7 @@ button {
 }
 
 .dropzone {
-  border: 2px dashed var(--cobalt-line);
+  border: 2px dashed var(--pine-line);
   padding: 1.6rem 1rem;
   text-align: center;
   cursor: pointer;
@@ -320,7 +320,7 @@ button {
 }
 
 .btn-ink:hover {
-  background: #232c42;
+  background: #24352c;
 }
 
 .btn-ghost {
@@ -388,7 +388,7 @@ button {
 
 .ticket-perf {
   position: relative;
-  border-top: 2px dashed rgba(16, 22, 35, 0.4);
+  border-top: 2px dashed rgba(22, 33, 28, 0.45);
   margin: 0 -1.75rem;
   padding: 1rem 1.75rem 0;
 }
@@ -402,7 +402,7 @@ button {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--cobalt);
+  background: var(--pine);
 }
 
 .ticket-perf::before {
@@ -480,7 +480,7 @@ button {
 
 .claim-wrap {
   flex: 1;
-  background: var(--cobalt);
+  background: var(--pine);
   color: var(--white);
   padding: clamp(1.5rem, 4vw, 4rem) clamp(1rem, 4vw, 4rem);
 }
@@ -549,7 +549,7 @@ button {
   flex-wrap: wrap;
   gap: 0.6rem;
   padding: 0.75rem 0;
-  border-top: 1px solid #e2e6ee;
+  border-top: 1px solid #e7e2d3;
 }
 
 .claim-file-row:first-of-type {
