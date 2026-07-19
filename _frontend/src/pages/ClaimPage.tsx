@@ -97,7 +97,7 @@ export default function ClaimPage() {
   return (
     <div className="shell">
       <header className="topbar">
-        <Link className="wordmark" to="/">Share<em>Any</em></Link>
+        <Link className="wordmark" to="/">exnote<em>share</em></Link>
         <span className="topbar-note">digital coat check · every drop burns in 24h</span>
       </header>
 

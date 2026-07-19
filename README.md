@@ -1,4 +1,4 @@
-# ShareAny
+# exnoteshare
 <a>https://shareany.me</a>
 A simple and secure temporary file and text sharing application that automatically deletes shared content after 24 hours.
 

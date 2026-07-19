@@ -124,7 +124,7 @@ export default function DropPage() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "ShareAny claim ticket",
+          title: "exnoteshare claim ticket",
           text: `Claim my drop with the word: ${ticket.keyword}`,
           url,
         });
@@ -149,7 +149,7 @@ export default function DropPage() {
   return (
     <div className="shell">
       <header className="topbar">
-        <a className="wordmark" href="/">Share<em>Any</em></a>
+        <a className="wordmark" href="/">exnote<em>share</em></a>
         <span className="topbar-note">digital coat check · every drop burns in 24h</span>
       </header>
 
