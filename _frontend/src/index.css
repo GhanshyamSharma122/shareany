@@ -1,171 +1,648 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* ============================================================
+   ShareAny — digital coat check
+   Tokens: cobalt drop panel, cool paper claim panel,
+   amber claim ticket, ink text, coral errors.
+   Type: Archivo (display + body), IBM Plex Mono (tickets/keywords).
+   ============================================================ */
 
-/* Simple reset for our custom component */
-html, body {
-  margin: 0;
-  padding: 0;
+:root {
+  --ink: #101623;
+  --cobalt: #2334e8;
+  --cobalt-deep: #1a27b4;
+  --cobalt-line: rgba(255, 255, 255, 0.22);
+  --paper: #f2f4f8;
+  --white: #ffffff;
+  --ticket: #ffc838;
+  --ticket-deep: #eaaa00;
+  --coral: #ff5a45;
+  --muted: #5a6376;
+  --font-body: "Archivo", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
-*, *::before, *::after {
-  box-sizing: inherit;
+html,
+body {
+  margin: 0;
+  padding: 0;
 }
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
 
-@layer base {
-  :root {
-    /* Base colors - Black background with purple accents */
-    --background: 0 0% 5%;
-    --foreground: 0 0% 98%;
+::selection {
+  background: var(--ticket);
+  color: var(--ink);
+}
 
-    /* Card colors */
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 98%;
+:focus-visible {
+  outline: 3px solid var(--ticket);
+  outline-offset: 2px;
+}
 
-    /* Popover colors */
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 98%;
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
 
-    /* Primary gradient colors - Purple theme */
-    --primary: 270 70% 50%;
-    --primary-foreground: 0 0% 98%;
-    --primary-glow: 280 80% 60%;
+/* ---------- shell ---------- */
 
-    /* Secondary colors */
-    --secondary: 270 10% 15%;
-    --secondary-foreground: 0 0% 98%;
+.shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
 
-    /* Muted colors */
-    --muted: 270 5% 20%;
-    --muted-foreground: 0 0% 70%;
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--ink);
+  color: var(--white);
+}
 
-    /* Accent colors */
-    --accent: 270 30% 25%;
-    --accent-foreground: 0 0% 98%;
+.wordmark {
+  font-weight: 900;
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--white);
+}
 
-    /* Destructive colors */
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
+.wordmark em {
+  font-style: normal;
+  color: var(--ticket);
+}
 
-    /* Border and input */
-    --border: 270 20% 25%;
-    --input: 270 15% 20%;
-    --ring: 270 70% 50%;
+.topbar-note {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+}
 
-    /* Design system tokens */
-    --radius: 0.75rem;
-    
-    /* Gradients - Black to purple */
-    --gradient-primary: linear-gradient(135deg, hsl(270 70% 50%), hsl(280 80% 60%));
-    --gradient-bg: linear-gradient(135deg, hsl(0 0% 5%), hsl(270 30% 15%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 8%), hsl(270 25% 18%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 5%), hsl(270 20% 12%));
-    
-    /* Shadows - Adjusted for black/purple theme */
-    --shadow-elegant: 0 10px 30px -10px hsl(270 70% 50% / 0.4);
-    --shadow-glow: 0 0 40px hsl(280 80% 60% / 0.3);
-    --shadow-card: 0 4px 20px hsl(0 0% 0% / 0.5);
-    
-    /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* ---------- split panels ---------- */
 
-    --sidebar-background: 0 0% 10%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 270 70% 50%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 270 20% 20%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 270 30% 25%;
-    --sidebar-ring: 270 70% 50%;
+.split {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+}
+
+.panel {
+  padding: clamp(1.5rem, 4vw, 4rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-drop {
+  background: var(--cobalt);
+  color: var(--white);
+}
+
+.panel-claim {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.panel-inner {
+  width: 100%;
+  max-width: 34rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.verb {
+  margin: 0;
+  font-weight: 900;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.verb-sub {
+  margin: 0.4rem 0 0.75rem;
+  font-size: 0.95rem;
+  max-width: 30rem;
+}
+
+.panel-drop .verb-sub {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.panel-claim .verb-sub {
+  color: var(--muted);
+}
+
+/* ---------- form pieces ---------- */
+
+.field-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.panel-drop .field-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.panel-claim .field-label {
+  color: var(--muted);
+}
+
+.textarea,
+.input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  border-radius: 0;
+  padding: 0.8rem 0.9rem;
+  border: 2px solid transparent;
+}
+
+.textarea {
+  min-height: 7.5rem;
+  resize: vertical;
+  background: var(--white);
+  color: var(--ink);
+}
+
+.textarea:focus,
+.input:focus {
+  border-color: var(--ticket);
+  outline: none;
+}
+
+.input-claim {
+  background: var(--white);
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+}
+
+.input-claim::placeholder {
+  letter-spacing: normal;
+  font-family: var(--font-body);
+  color: var(--muted);
+}
+
+.dropzone {
+  border: 2px dashed var(--cobalt-line);
+  padding: 1.6rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dropzone:hover,
+.dropzone.drag-over {
+  border-color: var(--ticket);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dropzone-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.dropzone-hint {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  margin-top: 0.35rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.file-input {
+  display: none;
+}
+
+.file-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+
+.file-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.file-chip-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.file-chip-size {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.65);
+  flex-shrink: 0;
+}
+
+.file-chip-remove {
+  border: 0;
+  background: transparent;
+  color: var(--white);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.15rem 0.3rem;
+  opacity: 0.7;
+}
+
+.file-chip-remove:hover {
+  opacity: 1;
+  color: var(--ticket);
+}
+
+/* ---------- buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 2px solid transparent;
+  padding: 0.85rem 1.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: transform 0.1s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-ticket {
+  background: var(--ticket);
+  color: var(--ink);
+}
+
+.btn-ticket:hover {
+  background: var(--ticket-deep);
+}
+
+.btn-ink {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.btn-ink:hover {
+  background: #232c42;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: inherit;
+  border-color: currentColor;
+}
+
+.btn-ghost:hover {
+  background: rgba(128, 128, 128, 0.12);
+}
+
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* ---------- the claim ticket (signature) ---------- */
+
+.ticket {
+  position: relative;
+  background: var(--ticket);
+  color: var(--ink);
+  padding: 1.5rem 1.75rem 1.25rem;
+  transform: rotate(-1.2deg);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
+  animation: ticket-in 0.35s ease-out both;
+}
+
+@keyframes ticket-in {
+  from {
+    opacity: 0;
+    transform: rotate(-1.2deg) translateY(14px);
   }
-
-  .dark {
-    --background: 0 0% 3%;
-    --foreground: 0 0% 98%;
-
-    --card: 0 0% 6%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 270 80% 60%;
-    --primary-foreground: 0 0% 98%;
-
-    --secondary: 270 15% 12%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 270 10% 15%;
-    --muted-foreground: 0 0% 70%;
-
-    --accent: 270 25% 18%;
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 270 20% 20%;
-    --input: 270 15% 18%;
-    --ring: 270 80% 60%;
-    --sidebar-background: 0 0% 8%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 270 80% 60%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 270 20% 15%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 270 25% 20%;
-    --sidebar-ring: 270 80% 60%;
+  to {
+    opacity: 1;
+    transform: rotate(-1.2deg) translateY(0);
   }
 }
 
-@layer base {
+.ticket-eyebrow {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ticket-word {
+  margin: 0.75rem 0 0.9rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+  letter-spacing: 0.04em;
+  word-break: break-all;
+  line-height: 1.1;
+}
+
+.ticket-perf {
+  position: relative;
+  border-top: 2px dashed rgba(16, 22, 35, 0.4);
+  margin: 0 -1.75rem;
+  padding: 1rem 1.75rem 0;
+}
+
+/* punched notches on the perforation line */
+.ticket-perf::before,
+.ticket-perf::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--cobalt);
+}
+
+.ticket-perf::before {
+  left: -11px;
+}
+
+.ticket-perf::after {
+  right: -11px;
+}
+
+.ticket-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  word-break: break-all;
+}
+
+.ticket-link a {
+  color: var(--ink);
+  flex: 1;
+  min-width: 0;
+}
+
+.ticket-copy {
+  border: 2px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.6rem;
+  flex-shrink: 0;
+}
+
+.ticket-copy:hover {
+  background: var(--ink);
+  color: var(--ticket);
+}
+
+.ticket-barcode {
+  margin-top: 1rem;
+  height: 34px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ink) 0 2px,
+    transparent 2px 5px,
+    var(--ink) 5px 9px,
+    transparent 9px 12px,
+    var(--ink) 12px 13px,
+    transparent 13px 19px
+  );
+}
+
+.ticket-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+}
+
+.burn-note {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.75rem;
+}
+
+/* ---------- claim page ---------- */
+
+.claim-wrap {
+  flex: 1;
+  background: var(--cobalt);
+  color: var(--white);
+  padding: clamp(1.5rem, 4vw, 4rem) clamp(1rem, 4vw, 4rem);
+}
+
+.claim-inner {
+  max-width: 44rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.claim-stub {
+  background: var(--ticket);
+  color: var(--ink);
+  padding: 1.1rem 1.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  transform: rotate(-0.6deg);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.claim-stub-word {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  word-break: break-all;
+}
+
+.claim-stub-meta {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.claim-card {
+  background: var(--white);
+  color: var(--ink);
+  padding: 1.5rem;
+}
+
+.claim-card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.claim-message {
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.claim-file-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid #e2e6ee;
+}
+
+.claim-file-row:first-of-type {
+  border-top: 0;
+}
+
+.claim-file-name {
+  flex: 1;
+  min-width: 8rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+.claim-file-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.claim-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* empty / loading states */
+.void-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.void-state h2 {
+  font-weight: 900;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  text-transform: uppercase;
+  margin: 0 0 0.5rem;
+}
+
+.void-state p {
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0 0 1.5rem;
+}
+
+.void-state .kw {
+  font-family: var(--font-mono);
+  color: var(--ticket);
+}
+
+/* ---------- misc ---------- */
+
+.error-band {
+  background: var(--coral);
+  color: var(--white);
+  padding: 0.65rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.footer {
+  background: var(--ink);
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-align: center;
+  padding: 0.9rem 1rem;
+}
+
+.footer strong {
+  color: var(--ticket);
+  font-weight: 700;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 860px) {
+  .split {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar-note {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
   * {
-    @apply border-border;
+    animation: none !important;
+    transition: none !important;
   }
 
-  body {
-    background: #f4f1ea;
-    color: #1c1917;
-    color-scheme: light;
-    @apply min-h-screen;
-  }
-}
-
-@layer components {
-  .gradient-primary {
-    background: var(--gradient-primary);
-  }
-  
-  .gradient-card {
-    background: var(--gradient-card);
-  }
-  
-  .shadow-elegant {
-    box-shadow: var(--shadow-elegant);
-  }
-  
-  .shadow-glow {
-    box-shadow: var(--shadow-glow);
-  }
-  
-  .shadow-card {
-    box-shadow: var(--shadow-card);
-  }
-  
-  .transition-smooth {
-    transition: var(--transition-smooth);
-  }
-  
-  .upload-zone {
-    @apply border-dashed border-2 border-primary/30 rounded-lg p-8 text-center transition-smooth hover:border-primary/50 hover:bg-primary/5;
-  }
-  
-  .upload-zone.drag-over {
-    @apply border-primary bg-primary/10;
+  .ticket {
+    transform: none;
   }
 }

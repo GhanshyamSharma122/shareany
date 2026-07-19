@@ -1,14 +1,14 @@
 import { Routes, Route } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import RetrievePage from "./pages/RetrievePage";
-import SimpleShareAny from "./pages/SimpleShareAny";
+import DropPage from "./pages/DropPage";
+import ClaimPage from "./pages/ClaimPage";
 
 export default function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<SimpleShareAny />} />
-        <Route path="/:keyword" element={<RetrievePage />} />
+        <Route path="/" element={<DropPage />} />
+        <Route path="/:keyword" element={<ClaimPage />} />
       </Routes>
       <Toaster position="top-right" />
     </>
